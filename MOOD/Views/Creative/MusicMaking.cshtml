@@ -1,0 +1,556 @@
+﻿@{
+    ViewData["Title"] = "آهنگ‌سازی | MŌOD";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(145deg, #ec4899 0%, #f472b6 35%, #fb923c 65%, #fbbf24 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 100px clamp(16px, 5vw, 60px) 50px;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            overflow-y: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+            body::-webkit-scrollbar {
+                display: none;
+            }
+
+        .mood-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px clamp(20px, 4vw, 50px);
+            background: rgba(11, 16, 48, 0.30);
+            backdrop-filter: blur(24px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .mood-brand {
+            display: flex;
+            align-items: center;
+            gap: clamp(8px, 1.5vw, 14px);
+            text-decoration: none;
+        }
+
+        .mood-logo {
+            width: clamp(38px, 5vw, 48px);
+            height: clamp(38px, 5vw, 48px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 14px;
+            font-size: clamp(18px, 2.5vw, 22px);
+            font-weight: 900;
+            color: #fff;
+            background: linear-gradient(135deg, #7b4dff, #21d4fd, #ff4f9a);
+            box-shadow: 0 0 20px rgba(123, 77, 255, 0.4);
+        }
+
+        .mood-brand-name {
+            font-size: clamp(20px, 3vw, 28px);
+            font-weight: 800;
+            letter-spacing: 0.06em;
+            background: linear-gradient(90deg, #ffffff, #a9a0ff, #72ddff, #ff8bce);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .mood-auth {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-size: clamp(13px, 1.5vw, 16px);
+            padding: clamp(6px, 1.2vw, 10px) clamp(12px, 2vw, 20px);
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.04);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+            .mood-auth:hover {
+                background: rgba(255, 255, 255, 0.08);
+                border-color: rgba(255, 255, 255, 0.15);
+            }
+
+        .menu-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            z-index: 1001;
+            position: relative;
+        }
+
+            .menu-toggle span {
+                display: block;
+                width: 28px;
+                height: 2.5px;
+                background: rgba(255, 255, 255, 0.8);
+                border-radius: 4px;
+                transition: all 0.3s ease;
+            }
+
+            .menu-toggle:hover span {
+                background: #fff;
+            }
+
+        .menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(6px);
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+            .menu-overlay.active {
+                opacity: 1;
+                visibility: visible;
+            }
+
+        .menu-panel {
+            position: fixed;
+            top: 0;
+            left: -340px;
+            width: clamp(280px, 30vw, 320px);
+            height: 100%;
+            background: linear-gradient(160deg, rgba(236, 72, 153, 0.95), rgba(251, 146, 60, 0.92));
+            backdrop-filter: blur(24px);
+            padding: 28px clamp(16px, 3vw, 24px);
+            box-shadow: 4px 0 50px rgba(0, 0, 0, 0.3);
+            transition: left 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+            display: flex;
+            flex-direction: column;
+            z-index: 2001;
+            border-radius: 0 24px 24px 0;
+        }
+
+        .menu-overlay.active .menu-panel {
+            left: 0;
+        }
+
+        .menu-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+            margin-bottom: 24px;
+        }
+
+        .menu-title {
+            font-size: clamp(18px, 2.5vw, 22px);
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: 0.05em;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .menu-close {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 26px;
+            cursor: pointer;
+            transition: color 0.3s ease, transform 0.3s ease;
+            padding: 4px 8px;
+        }
+
+            .menu-close:hover {
+                color: #fff;
+                transform: rotate(90deg);
+            }
+
+        .menu-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex: 1;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 18px;
+            border-radius: 16px;
+            color: rgba(255, 255, 255, 0.85);
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid transparent;
+        }
+
+            .menu-item i {
+                font-size: 22px;
+                color: rgba(255, 255, 255, 0.7);
+                transition: color 0.3s ease;
+            }
+
+            .menu-item:hover {
+                background: rgba(255, 255, 255, 0.12);
+                border-color: rgba(255, 255, 255, 0.1);
+                color: #fff;
+                transform: translateX(4px);
+            }
+
+                .menu-item:hover i {
+                    color: #fff;
+                }
+
+        .music-card {
+            max-width: 800px;
+            width: 100%;
+            padding: clamp(30px, 5vw, 50px) clamp(20px, 4vw, 40px);
+            border-radius: 28px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(8px);
+            box-shadow: 0 8px 35px rgba(0, 0, 0, 0.2);
+            color: #fff;
+            margin-top: 20px;
+        }
+
+        .music-title {
+            font-size: clamp(24px, 3.5vw, 32px);
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #fef08a, #fbbf24, #f59e0b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .music-textarea {
+            width: 100%;
+            padding: 16px;
+            border-radius: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.04);
+            color: #fff;
+            font-size: 16px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 180px;
+            outline: none;
+            transition: 0.3s ease;
+        }
+
+            .music-textarea::placeholder {
+                color: rgba(255, 255, 255, 0.3);
+            }
+
+            .music-textarea:focus {
+                border-color: rgba(255, 215, 0, 0.3);
+                background: rgba(255, 255, 255, 0.08);
+            }
+
+        .music-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+
+        .music-btn {
+            padding: 10px 24px;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.04);
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.3s ease;
+            backdrop-filter: blur(4px);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+            .music-btn:hover {
+                background: rgba(255, 255, 255, 0.1);
+                color: #fff;
+            }
+
+        .music-btn-primary {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            border-color: #fbbf24;
+            color: #1a1a2e;
+            font-weight: 700;
+        }
+
+            .music-btn-primary:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 25px rgba(251, 191, 36, 0.2);
+            }
+
+        .saved-lyrics {
+            margin-top: 24px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            padding-top: 20px;
+        }
+
+            .saved-lyrics h4 {
+                color: #fff;
+                font-weight: 600;
+                margin-bottom: 12px;
+            }
+
+        .lyric-item {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 14px;
+            padding: 14px 18px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            transition: 0.3s ease;
+        }
+
+            .lyric-item:hover {
+                background: rgba(255, 255, 255, 0.08);
+            }
+
+        .lyric-text {
+            flex: 1;
+            color: #fff;
+            font-size: 14px;
+            word-break: break-word;
+            font-weight: 500;
+        }
+
+        .lyric-date {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.3);
+            white-space: nowrap;
+        }
+
+        .lyric-delete {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            font-size: 16px;
+            transition: 0.3s ease;
+        }
+
+            .lyric-delete:hover {
+                color: #f87171;
+            }
+
+        .empty-lyric {
+            color: rgba(255, 255, 255, 0.3);
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .back-to-happy {
+            text-align: center;
+            margin-top: 28px;
+        }
+
+            .back-to-happy a {
+                display: inline-block;
+                padding: 12px 30px;
+                border-radius: 40px;
+                border: 1px solid rgba(255, 255, 255, 0.15);
+                background: rgba(255, 255, 255, 0.06);
+                color: rgba(255, 255, 255, 0.7);
+                text-decoration: none;
+                font-size: 15px;
+                font-weight: 500;
+                transition: all 0.3s ease;
+                backdrop-filter: blur(8px);
+            }
+
+                .back-to-happy a:hover {
+                    background: rgba(255, 255, 255, 0.15);
+                    color: #fff;
+                    transform: translateY(-2px);
+                }
+    </style>
+</head>
+
+<body>
+
+    <header class="mood-header">
+        <button class="menu-toggle" id="menuToggle" aria-label="منو">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <a href="/" class="mood-brand">
+            <div class="mood-logo">M</div>
+            <span class="mood-brand-name">MŌOD</span>
+        </a>
+
+        <a href="/Login" class="mood-auth">
+            <span>ورود</span>
+            <span style="opacity:0.4;">/</span>
+            <span>ثبت‌نام</span>
+        </a>
+    </header>
+
+    <div class="menu-overlay" id="menuOverlay">
+        <div class="menu-panel">
+            <div class="menu-header">
+                <span class="menu-title">منو</span>
+                <button class="menu-close" id="menuClose">✕</button>
+            </div>
+            <nav class="menu-nav">
+                <a href="#" class="menu-item">
+                    <i class="bi bi-clock-history"></i>
+                    <span>تاریخچه</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="bi bi-gear"></i>
+                    <span>تنظیمات</span>
+                </a>
+            </nav>
+        </div>
+    </div>
+
+    <div class="music-card">
+        <h4 style="
+        color: rgba(255,255,255,0.8);
+        text-align: center;
+        margin-bottom: 28px;
+        font-weight: 600;
+        font-size: 18px;
+        letter-spacing: 0.5px;
+    ">
+            برای خودت آهنگ بساز 
+        </h4>
+        <textarea id="lyricsInput" class="music-textarea" placeholder="چند خط از یه آهنگ که دوست داری یا خودت بنویس..."></textarea>
+
+        <div class="music-actions">
+            <button class="music-btn" id="clearLyricsBtn">🗑️ پاک کردن</button>
+            <button class="music-btn music-btn-primary" id="saveLyricsBtn">💾 ذخیره</button>
+        </div>
+
+        <div class="saved-lyrics">
+            <h4>📋 آهنگ‌های ذخیره‌شده</h4>
+            <div id="lyricsList"></div>
+        </div>
+
+        <div class="back-to-happy">
+            <a href="/Happy">← برگشت به صفحه خوشحالی</a>
+        </div>
+    </div>
+
+    <script>
+        const lyricsInput = document.getElementById('lyricsInput');
+        const saveBtn = document.getElementById('saveLyricsBtn');
+        const clearBtn = document.getElementById('clearLyricsBtn');
+        const list = document.getElementById('lyricsList');
+
+        function getLyrics() {
+            const data = localStorage.getItem('savedLyrics');
+            return data ? JSON.parse(data) : [];
+        }
+
+        function saveLyrics(data) {
+            localStorage.setItem('savedLyrics', JSON.stringify(data));
+        }
+
+        function renderLyrics() {
+            const items = getLyrics();
+            if (items.length === 0) {
+                list.innerHTML = `<div class="empty-lyric">هنوز چیزی ذخیره نکردی 🎵</div>`;
+                return;
+            }
+            list.innerHTML = items.map((item, index) => `
+                <div class="lyric-item">
+                    <span class="lyric-text">${escapeHtml(item.text)}</span>
+                    <span class="lyric-date">${item.date}</span>
+                    <button class="lyric-delete" onclick="deleteLyric(${index})"><i class="bi bi-x-lg"></i></button>
+                </div>
+            `).join('');
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function addLyric() {
+            const text = lyricsInput.value.trim();
+            if (!text) {
+                alert('یه چیزی بنویس!');
+                return;
+            }
+            const items = getLyrics();
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('fa-IR') + ' ' + now.toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' });
+            items.push({ text, date: dateStr });
+            saveLyrics(items);
+            lyricsInput.value = '';
+            renderLyrics();
+        }
+
+        function deleteLyric(index) {
+            const items = getLyrics();
+            items.splice(index, 1);
+            saveLyrics(items);
+            renderLyrics();
+        }
+
+        function clearAll() {
+            if (!confirm('همه پاک میشن؟')) return;
+            saveLyrics([]);
+            renderLyrics();
+        }
+
+        saveBtn.addEventListener('click', addLyric);
+        clearBtn.addEventListener('click', clearAll);
+
+        renderLyrics();
+    </script>
+
+</body>
+</html>

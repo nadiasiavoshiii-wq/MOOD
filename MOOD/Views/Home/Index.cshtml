@@ -1,0 +1,128 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
+    ViewData["Title"] = "MŌOD - حس امروز تو";
+}
+
+<!-- ====== هدر ====== -->
+<header class="mood-header">
+    <a href="/" class="mood-brand-link">
+        <div class="mood-brand-logo">M</div>
+        <span class="mood-brand-name">MŌOD</span>
+    </a>
+
+    <div class="language-dropdown">
+        <button class="language-button" type="button">
+            <span class="language-icon">🌐</span>
+            <span>EN</span>
+            <span class="language-arrow">⌄</span>
+        </button>
+
+        <div class="language-menu">
+            <a href="/Language/SetLanguage?culture=en&returnUrl=@Context.Request.Path">
+                🇬🇧 English
+            </a>
+            <a href="/Language/SetLanguage?culture=fa&returnUrl=@Context.Request.Path">
+                🇮🇷 فارسی
+            </a>
+            <a href="/Language/SetLanguage?culture=ko&returnUrl=@Context.Request.Path">
+                🇰🇷 한국어
+            </a>
+            <a href="/Language/SetLanguage?culture=ja&returnUrl=@Context.Request.Path">
+                🇯🇵 日本語
+            </a>
+            <a href="/Language/SetLanguage?culture=zh&returnUrl=@Context.Request.Path">
+                🇨🇳 中文
+            </a>
+            <a href="/Language/SetLanguage?culture=es&returnUrl=@Context.Request.Path">
+                🇪🇸 Español
+            </a>
+            <a href="/Language/SetLanguage?culture=fr&returnUrl=@Context.Request.Path">
+                🇫🇷 Français
+            </a>
+            <a href="/Language/SetLanguage?culture=de&returnUrl=@Context.Request.Path">
+                🇩🇪 Deutsch
+            </a>
+            <a href="/Language/SetLanguage?culture=it&returnUrl=@Context.Request.Path">
+                🇮🇹 Italiano
+            </a>
+            <a href="/Language/SetLanguage?culture=ru&returnUrl=@Context.Request.Path">
+                🇷🇺 Русский
+            </a>
+            <a href="/Language/SetLanguage?culture=tr&returnUrl=@Context.Request.Path">
+                🇹🇷 Türkçe
+            </a>
+            <a href="/Language/SetLanguage?culture=ar&returnUrl=@Context.Request.Path">
+                🇸🇦 العربية
+            </a>
+        </div>
+    </div>
+</header>
+
+<!-- ====== لودینگ ====== -->
+<div id="mood-loader" class="mood-loader">
+    <div class="mood-orb orb-1"></div>
+    <div class="mood-orb orb-2"></div>
+    <div class="mood-orb orb-3"></div>
+    <div class="mood-orb orb-4"></div>
+
+    <div class="mood-loader-content">
+        <div class="mood-logo">
+            <span>M</span><span>O</span><span>O</span><span>D</span>
+        </div>
+        <div class="mood-loading-line"></div>
+    </div>
+</div>
+
+<!-- ====== بخش اصلی ====== -->
+<section class="mood-discovery">
+    <div class="mood-card-container" id="moodCard">
+
+        <!-- مرحله ۱: سوال اول -->
+        <div class="mood-step mood-step-intro" id="introStep">
+            <div class="mood-step-content">
+                <h1>امروز چه حسی داری؟</h1>
+                <p> .تو رو بهتر بشناسه <span>MŌOD</span> بزار</p>
+                <button class="mood-start-button" id="startMood">
+                    <span>بزن بریم</span>
+                    <span>→</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- مرحله ۲: انتخاب حس -->
+        <div class="mood-step mood-step-options" id="optionsStep">
+            <h2>الان بیشتر چه حسی داری؟</h2>
+
+            <div class="mood-buttons">
+                <a asp-controller="Happy" asp-action="index" class="feeling-button happy" data-mood="happy" style="text-decoration: none;">
+                    <span>خوشحالم</span>
+                </a>
+                <a asp-controller="Calm" asp-action="index" class="feeling-button calm" data-mood="calm" style="text-decoration: none;">
+                    <span>آرومم</span>
+                </a>
+                <a asp-controller="Sad" asp-action="index" class="feeling-button sad" data-mood="sad" style="text-decoration: none;">
+                    <span>غمگینم</span>
+                </a>
+                <a asp-controller="Angry" asp-action="index" class="feeling-button angry" data-mood="angry" style="text-decoration: none;">
+                    <span>اعصبانیم</span>
+                </a>
+                <a asp-controller="Energetic" asp-action="index" class="feeling-button energetic" data-mood="energetic" style="text-decoration: none;">
+                    <span>هیجان‌زده‌ام</span>
+                </a>
+                <a asp-controller="Tired" asp-action="index" class="feeling-button tired" data-mood="tired" style="text-decoration: none;">
+                    <span>خسته‌ام</span>
+                </a>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- ====== فایل‌های CSS ====== -->
+<link rel="stylesheet" href="~/css/mood-loader.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/mood-header.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/mood-home.css" asp-append-version="true" />
+
+<!-- ====== فایل‌های JS ====== -->
+<script src="~/js/mood-app.js" asp-append-version="true"></script>

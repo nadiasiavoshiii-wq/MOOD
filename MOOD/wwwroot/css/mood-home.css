@@ -1,0 +1,306 @@
+﻿/* ================================
+   MŌOD HOME - شیک و ناناس
+================================ */
+
+.mood-discovery {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 100px 20px 60px;
+    position: relative;
+}
+
+/* ===== کارت اصلی ===== */
+.mood-card-container {
+    position: relative;
+    width: min(920px, 94%);
+    min-height: 460px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 50px 40px;
+    border-radius: 48px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.01));
+    backdrop-filter: blur(32px);
+    -webkit-backdrop-filter: blur(32px);
+    box-shadow: 0 32px 120px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    overflow: hidden;
+    transition: min-height 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+    /* ===== هاله پشت کارت ===== */
+    .mood-card-container::before {
+        content: "";
+        position: absolute;
+        width: 600px;
+        height: 600px;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        border-radius: 50%;
+        background: conic-gradient(from 0deg, #7b4dff, #21d4fd, #ff4f9a, #ffd166, #7b4dff);
+        filter: blur(120px);
+        opacity: 0.07;
+        pointer-events: none;
+        animation: card-glow 15s linear infinite;
+    }
+
+@keyframes card-glow {
+    0% {
+        transform: translate(-50%, -50%) rotate(0deg) scale(1);
+    }
+
+    50% {
+        transform: translate(-50%, -50%) rotate(180deg) scale(1.2);
+    }
+
+    100% {
+        transform: translate(-50%, -50%) rotate(360deg) scale(1);
+    }
+}
+
+/* ===== استپ‌ها ===== */
+.mood-step {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    text-align: center;
+}
+
+.mood-step-intro {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.5s ease, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+    .mood-step-intro.hide {
+        opacity: 0;
+        transform: translateY(-30px);
+        pointer-events: none;
+    }
+
+.mood-step-options {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -45px) scale(0.96);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.7s ease, transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+    .mood-step-options.show {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+        pointer-events: auto;
+    }
+
+/* ===== سوال اول ===== */
+.mood-step-intro h1 {
+    margin: 0;
+    color: #ffffff;
+    font-size: clamp(2.4rem, 5.5vw, 4.4rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    text-shadow: 0 0 40px rgba(140, 130, 255, 0.12);
+}
+
+.mood-step-intro p {
+    margin: 18px 0 38px;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 1.1rem;
+    font-weight: 400;
+}
+
+    .mood-step-intro p span {
+        font-weight: 700;
+        background: linear-gradient(90deg, #a78bfa, #60a5fa, #f472b6);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+/* ===== دکمه شروع ===== */
+.mood-start-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    padding: 16px 32px;
+    border-radius: 60px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: linear-gradient(135deg, rgba(123, 77, 255, 0.20), rgba(33, 212, 253, 0.10));
+    color: #fff;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 4px 30px rgba(123, 77, 255, 0.12);
+    transition: all 0.35s ease;
+}
+
+    .mood-start-button:hover {
+        transform: translateY(-4px) scale(1.02);
+        background: linear-gradient(135deg, rgba(123, 77, 255, 0.30), rgba(33, 212, 253, 0.18));
+        border-color: rgba(123, 77, 255, 0.30);
+        box-shadow: 0 8px 40px rgba(123, 77, 255, 0.25);
+    }
+
+/* ===== سوال دوم ===== */
+.mood-step-options h2 {
+    margin: 0 0 32px;
+    color: #fff;
+    font-size: clamp(1.6rem, 3vw, 2.3rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    opacity: 0.9;
+}
+
+/* ===== دکمه‌های احساس ===== */
+.mood-buttons {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    width: 100%;
+    padding: 0 24px; /* ← فاصله از لبه‌های چپ و راست (دلخواه خودت) */
+    box-sizing: border-box;
+}
+
+.feeling-button {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 90px;
+    padding: 16px 22px;
+    border-radius: 22px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgba(255, 255, 255, 0.03);
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    overflow: hidden;
+    backdrop-filter: blur(8px);
+    transition: all 0.3s ease;
+   
+}
+
+    .feeling-button::before {
+        content: "";
+        position: absolute;
+        width: 150px;
+        height: 150px;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        border-radius: 50%;
+        filter: blur(50px);
+        opacity: 0.15;
+        transition: all 0.4s ease;
+    }
+
+    .feeling-button span {
+        position: relative;
+        z-index: 2;
+    }
+
+    .feeling-button:hover {
+        transform: translateY(-6px) scale(1.02);
+        background: rgba(255, 255, 255, 0.07);
+        border-color: rgba(255, 255, 255, 0.15);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.20);
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+        .feeling-button:hover::before {
+            opacity: 0.45;
+            transform: translate(-50%, -50%) scale(1.4);
+        }
+
+    .feeling-button:active {
+        transform: scale(0.96);
+    }
+
+/* ===== رنگ‌های احساسات ===== */
+.happy::before {
+    background: linear-gradient(135deg, #fbbf24, #f472b6);
+}
+
+.calm::before {
+    background: linear-gradient(135deg, #38bdf8, #818cf8);
+}
+
+.sad::before {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+}
+
+.angry::before {
+    background: linear-gradient(135deg, #f43f5e, #fb923c);
+}
+
+.energetic::before {
+    background: linear-gradient(135deg, #fcd34d, #f97316);
+}
+
+.tired::before {
+    background: linear-gradient(135deg, #a78bfa, #e879f9);
+}
+
+/* ===== ریسپانسیو ===== */
+@media (max-width: 700px) {
+    .mood-card-container {
+        width: 96%;
+        min-height: 480px;
+        padding: 30px 20px;
+        border-radius: 32px;
+    }
+
+    .mood-buttons {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+        padding: 0 12px; /* ← فاصله کمتر برای موبایل */
+    }
+
+    .feeling-button {
+        min-height: 72px;
+        border-radius: 18px;
+        font-size: 14px;
+    }
+
+    .mood-step-intro h1 {
+        font-size: 2rem;
+    }
+
+    .mood-start-button {
+        padding: 14px 24px;
+        font-size: 15px;
+    }
+
+    .mood-step-options h2 {
+        font-size: 1.3rem;
+    }
+}
+
+@media (max-width: 400px) {
+    .mood-card-container {
+        padding: 24px 16px;
+        border-radius: 24px;
+        min-height: 440px;
+    }
+
+    .mood-buttons {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        padding: 0 8px;
+    }
+
+    .feeling-button {
+        min-height: 62px;
+        font-size: 13px;
+        border-radius: 14px;
+    }
+}

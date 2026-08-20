@@ -1,0 +1,12 @@
+﻿using Microsoft.AspNetCore.Mvc;
+
+namespace MOOD.Controllers
+{
+    public class SavetheMomentController : Controller
+    {
+        public IActionResult Index()
+        {
+            return View("../SavetheMoment/index");
+        }
+    }
+}

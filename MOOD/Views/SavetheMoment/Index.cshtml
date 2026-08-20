@@ -1,0 +1,691 @@
+﻿@{
+    ViewData["Title"] = "ذخیره لحظه | MŌOD";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(145deg, #ec4899 0%, #f472b6 35%, #fb923c 65%, #fbbf24 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 100px clamp(16px, 5vw, 60px) 50px;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            overflow-y: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+            body::-webkit-scrollbar {
+                display: none;
+            }
+
+        .mood-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px clamp(20px, 4vw, 50px);
+            background: rgba(11, 16, 48, 0.30);
+            backdrop-filter: blur(24px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .mood-brand {
+            display: flex;
+            align-items: center;
+            gap: clamp(8px, 1.5vw, 14px);
+            text-decoration: none;
+        }
+
+        .mood-logo {
+            width: clamp(38px, 5vw, 48px);
+            height: clamp(38px, 5vw, 48px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 14px;
+            font-size: clamp(18px, 2.5vw, 22px);
+            font-weight: 900;
+            color: #fff;
+            background: linear-gradient(135deg, #7b4dff, #21d4fd, #ff4f9a);
+            box-shadow: 0 0 20px rgba(123, 77, 255, 0.4);
+        }
+
+        .mood-brand-name {
+            font-size: clamp(20px, 3vw, 28px);
+            font-weight: 800;
+            letter-spacing: 0.06em;
+            background: linear-gradient(90deg, #ffffff, #a9a0ff, #72ddff, #ff8bce);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .mood-auth {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-size: clamp(13px, 1.5vw, 16px);
+            padding: clamp(6px, 1.2vw, 10px) clamp(12px, 2vw, 20px);
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.04);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+            .mood-auth:hover {
+                background: rgba(255, 255, 255, 0.08);
+                border-color: rgba(255, 255, 255, 0.15);
+            }
+
+        .menu-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            z-index: 1001;
+            position: relative;
+        }
+
+            .menu-toggle span {
+                display: block;
+                width: 28px;
+                height: 2.5px;
+                background: rgba(255, 255, 255, 0.8);
+                border-radius: 4px;
+                transition: all 0.3s ease;
+            }
+
+            .menu-toggle:hover span {
+                background: #fff;
+            }
+
+        .menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(6px);
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+            .menu-overlay.active {
+                opacity: 1;
+                visibility: visible;
+            }
+
+        .menu-panel {
+            position: fixed;
+            top: 0;
+            left: -340px;
+            width: clamp(280px, 30vw, 320px);
+            height: 100%;
+            background: linear-gradient(160deg, rgba(236, 72, 153, 0.95), rgba(251, 146, 60, 0.92));
+            backdrop-filter: blur(24px);
+            padding: 28px clamp(16px, 3vw, 24px);
+            box-shadow: 4px 0 50px rgba(0, 0, 0, 0.3);
+            transition: left 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+            display: flex;
+            flex-direction: column;
+            z-index: 2001;
+            border-radius: 0 24px 24px 0;
+        }
+
+        .menu-overlay.active .menu-panel {
+            left: 0;
+        }
+
+        .menu-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+            margin-bottom: 24px;
+        }
+
+        .menu-title {
+            font-size: clamp(18px, 2.5vw, 22px);
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: 0.05em;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .menu-close {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 26px;
+            cursor: pointer;
+            transition: color 0.3s ease, transform 0.3s ease;
+            padding: 4px 8px;
+        }
+
+            .menu-close:hover {
+                color: #fff;
+                transform: rotate(90deg);
+            }
+
+        .menu-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex: 1;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 18px;
+            border-radius: 16px;
+            color: rgba(255, 255, 255, 0.85);
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid transparent;
+        }
+
+            .menu-item i {
+                font-size: 22px;
+                color: rgba(255, 255, 255, 0.7);
+                transition: color 0.3s ease;
+            }
+
+            .menu-item:hover {
+                background: rgba(255, 255, 255, 0.12);
+                border-color: rgba(255, 255, 255, 0.1);
+                color: #fff;
+                transform: translateX(4px);
+            }
+
+                .menu-item:hover i {
+                    color: #fff;
+                }
+
+        /* ===== بخش لحظات ===== */
+        .moment-card {
+            max-width: 1000px;
+            width: 100%;
+            padding: clamp(30px, 5vw, 50px) clamp(20px, 4vw, 40px);
+            border-radius: 28px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(8px);
+            box-shadow: 0 8px 35px rgba(0, 0, 0, 0.2);
+            color: #fff;
+            margin-top: 20px;
+        }
+
+        .moment-title {
+            font-size: clamp(24px, 3.5vw, 32px);
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, #fef08a, #fbbf24, #f59e0b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .moment-upload-area {
+            border: 2px dashed rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+            .moment-upload-area:hover {
+                border-color: rgba(255, 215, 0, 0.2);
+                background: rgba(255, 255, 255, 0.03);
+            }
+
+            .moment-upload-area i {
+                font-size: 40px;
+                color: rgba(255, 255, 255, 0.3);
+            }
+
+            .moment-upload-area p {
+                color: rgba(255, 255, 255, 0.4);
+                margin-top: 8px;
+                font-size: 14px;
+            }
+
+        #imageInput {
+            display: none;
+        }
+
+        .moment-caption {
+            width: 100%;
+            padding: 14px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.04);
+            color: #fff;
+            font-size: 15px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 80px;
+            outline: none;
+            margin-bottom: 16px;
+        }
+
+            .moment-caption::placeholder {
+                color: rgba(255, 255, 255, 0.3);
+            }
+
+            .moment-caption:focus {
+                border-color: rgba(255, 215, 0, 0.3);
+                background: rgba(255, 255, 255, 0.08);
+            }
+
+        .moment-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .moment-btn {
+            padding: 10px 24px;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.04);
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.3s ease;
+            backdrop-filter: blur(4px);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+            .moment-btn:hover {
+                background: rgba(255, 255, 255, 0.1);
+                color: #fff;
+            }
+
+        .moment-btn-danger {
+            border-color: rgba(239, 68, 68, 0.15);
+            color: rgba(239, 68, 68, 0.6);
+        }
+
+            .moment-btn-danger:hover {
+                background: rgba(239, 68, 68, 0.1);
+                color: #f87171;
+            }
+
+        .moment-btn-primary {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            border-color: #fbbf24;
+            color: #1a1a2e;
+            font-weight: 700;
+        }
+
+            .moment-btn-primary:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 25px rgba(251, 191, 36, 0.2);
+            }
+
+        .moment-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .moment-item {
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 18px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            transition: 0.3s ease;
+            position: relative;
+        }
+
+            .moment-item:hover {
+                transform: translateY(-4px);
+                background: rgba(255, 255, 255, 0.08);
+                border-color: rgba(255, 255, 255, 0.08);
+            }
+
+            .moment-item img {
+                width: 100%;
+                height: 180px;
+                object-fit: cover;
+                display: block;
+            }
+
+        .moment-item-info {
+            padding: 10px 14px 14px;
+        }
+
+        .moment-item-caption {
+            color: #fff;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 4px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .moment-item-date {
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 11px;
+        }
+
+        .moment-item-delete {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(0, 0, 0, 0.5);
+            border: none;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.3s ease;
+        }
+
+            .moment-item-delete:hover {
+                color: #f87171;
+                background: rgba(0, 0, 0, 0.7);
+            }
+
+        .empty-moment {
+            color: rgba(255, 255, 255, 0.3);
+            text-align: center;
+            padding: 40px 0;
+            grid-column: 1/-1;
+        }
+
+        .back-to-happy {
+            text-align: center;
+            margin-top: 28px;
+        }
+
+            .back-to-happy a {
+                display: inline-block;
+                padding: 12px 30px;
+                border-radius: 40px;
+                border: 1px solid rgba(255, 255, 255, 0.15);
+                background: rgba(255, 255, 255, 0.06);
+                color: rgba(255, 255, 255, 0.7);
+                text-decoration: none;
+                font-size: 15px;
+                font-weight: 500;
+                transition: all 0.3s ease;
+                backdrop-filter: blur(8px);
+            }
+
+                .back-to-happy a:hover {
+                    background: rgba(255, 255, 255, 0.15);
+                    color: #fff;
+                    transform: translateY(-2px);
+                }
+    </style>
+</head>
+
+<body>
+
+    <!-- ===== هدر ===== -->
+    <header class="mood-header">
+        <button class="menu-toggle" id="menuToggle" aria-label="منو">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <a href="/" class="mood-brand">
+            <div class="mood-logo">M</div>
+            <span class="mood-brand-name">MŌOD</span>
+        </a>
+
+        <a href="/Login" class="mood-auth">
+            <span>ورود</span>
+            <span style="opacity:0.4;">/</span>
+            <span>ثبت‌نام</span>
+        </a>
+    </header>
+
+    <!-- ===== منوی کشویی ===== -->
+    <div class="menu-overlay" id="menuOverlay">
+        <div class="menu-panel">
+            <div class="menu-header">
+                <span class="menu-title">منو</span>
+                <button class="menu-close" id="menuClose">✕</button>
+            </div>
+            <nav class="menu-nav">
+                <a href="#" class="menu-item">
+                    <i class="bi bi-clock-history"></i>
+                    <span>تاریخچه</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="bi bi-gear"></i>
+                    <span>تنظیمات</span>
+                </a>
+            </nav>
+        </div>
+    </div>
+
+    <!-- ===== صفحه لحظات ===== -->
+    <div class="moment-card">
+        <h4 style="
+    color: rgba(255,255,255,0.8);
+    text-align: center;
+    margin-bottom: 28px;
+    font-weight: 600;
+    font-size: 18px;
+    letter-spacing: 0.5px;
+">
+            Save The Momen
+        </h4>
+        <h5 style="
+    color: rgba(255,255,255,0.8);
+    text-align: center;
+    margin-bottom: 28px;
+    font-weight: 600;
+    font-size: 18px;
+    letter-spacing: 0.5px;
+">
+            عکساتو بزار اینجا یادگاری بمونن....
+        </h5>
+        <div class="moment-upload-area" id="uploadArea">
+            <i class="bi bi-plus-circle"></i>
+            <p>برای انتخاب عکس کلیک کن</p>
+        </div>
+
+        <input type="file" id="imageInput" accept="image/*" />
+
+        <textarea id="momentCaption" class="moment-caption" placeholder="برای این لحظه یه متن بنویس..."></textarea>
+
+        <div class="moment-actions">
+            
+            <button class="moment-btn moment-btn-danger" id="clearAllMomentsBtn">
+                <i class="bi bi-trash"></i> حذف همه لحظات
+            </button>
+            <button class="moment-btn moment-btn-primary" id="saveMomentBtn">
+                <i class="bi bi-check2"></i> ذخیره لحظه
+            </button>
+        </div>
+
+        <div style="border-top: 1px solid rgba(255,255,255,0.06); padding-top: 20px;">
+            <h4 style="color: #fff; font-weight: 600; margin-bottom: 16px;">📋 لحظات ذخیره‌شده</h4>
+            <div id="momentGallery" class="moment-gallery"></div>
+        </div>
+
+        <div class="back-to-happy">
+            <a href="/Happy">← برگشت به صفحه خوشحالی</a>
+        </div>
+    </div>
+
+    <script>
+        // ===== مدیریت لحظات =====
+
+        const uploadArea = document.getElementById('uploadArea');
+        const imageInput = document.getElementById('imageInput');
+        const captionInput = document.getElementById('momentCaption');
+        const saveBtn = document.getElementById('saveMomentBtn');
+        const clearBtn = document.getElementById('clearMomentBtn');
+        const clearAllBtn = document.getElementById('clearAllMomentsBtn');
+        const gallery = document.getElementById('momentGallery');
+
+        let currentImageData = null;
+
+        // ===== باز کردن انتخاب فایل =====
+        uploadArea.addEventListener('click', () => imageInput.click());
+
+        // ===== خواندن عکس =====
+        imageInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                currentImageData = event.target.result;
+                uploadArea.innerHTML = `
+                    <i class="bi bi-check-circle" style="color: #4ade80;"></i>
+                    <p style="color: rgba(255,255,255,0.6);">عکس انتخاب شد</p>
+                    <p style="font-size: 12px; color: rgba(255,255,255,0.3);">${file.name}</p>
+                `;
+            };
+            reader.readAsDataURL(file);
+        });
+
+        // ===== ذخیره لحظه =====
+        function saveMoment() {
+            if (!currentImageData) {
+                alert('لطفاً یه عکس انتخاب کن!');
+                return;
+            }
+
+            const caption = captionInput.value.trim() || '📸 یه لحظه‌ی قشنگ';
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('fa-IR') + ' ' + now.toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' });
+
+            const moments = JSON.parse(localStorage.getItem('moments')) || [];
+            moments.push({
+                id: Date.now(),
+                image: currentImageData,
+                caption: caption,
+                date: dateStr,
+                timestamp: now.getTime()
+            });
+            localStorage.setItem('moments', JSON.stringify(moments));
+
+            clearForm();
+            renderMoments();
+        }
+
+        // ===== پاک کردن فرم =====
+        function clearForm() {
+            currentImageData = null;
+            imageInput.value = '';
+            captionInput.value = '';
+            uploadArea.innerHTML = `
+                <i class="bi bi-plus-circle"></i>
+                <p>برای انتخاب عکس کلیک کن</p>
+            `;
+        }
+
+        // ===== حذف همه لحظات =====
+        function clearAllMoments() {
+            if (!confirm('همه‌ی لحظات پاک میشن، مطمئنی؟')) return;
+            localStorage.removeItem('moments');
+            renderMoments();
+        }
+
+        // ===== حذف تکی لحظه =====
+        function deleteMoment(index) {
+            if (!confirm('این لحظه رو حذف کنم؟')) return;
+            const moments = JSON.parse(localStorage.getItem('moments')) || [];
+            moments.splice(index, 1);
+            localStorage.setItem('moments', JSON.stringify(moments));
+            renderMoments();
+        }
+
+        // ===== نمایش لحظات =====
+        function renderMoments() {
+            const moments = JSON.parse(localStorage.getItem('moments')) || [];
+
+            if (moments.length === 0) {
+                gallery.innerHTML = `<div class="empty-moment">هنوز هیچ لحظه‌ای ذخیره نکردی 😊</div>`;
+                return;
+            }
+
+            gallery.innerHTML = moments.map((moment, index) => `
+                <div class="moment-item">
+                    <img src="${moment.image}" alt="Moment" />
+                    <div class="moment-item-info">
+                        <div class="moment-item-caption">${escapeHtml(moment.caption)}</div>
+                        <div class="moment-item-date">${moment.date}</div>
+                    </div>
+                    <button class="moment-item-delete" onclick="deleteMoment(${index})">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // ===== رویدادها =====
+        saveBtn.addEventListener('click', saveMoment);
+        clearBtn.addEventListener('click', clearForm);
+        clearAllBtn.addEventListener('click', clearAllMoments);
+
+        // ===== بارگذاری اولیه =====
+        renderMoments();
+    </script>
+
+</body>
+</html>

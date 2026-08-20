@@ -1,0 +1,545 @@
+﻿<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>خوشحالم 😊</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(145deg, #ec4899 0%, #f472b6 35%, #fb923c 65%, #fbbf24 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 100px 60px 50px;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            overflow-y: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+            body::-webkit-scrollbar {
+                display: none;
+            }
+
+        /* ===== هدر ===== */
+        .mood-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 50px;
+            background: rgba(11, 16, 48, 0.30);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .mood-brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            text-decoration: none;
+        }
+
+        .mood-logo {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 14px;
+            font-size: 22px;
+            font-weight: 900;
+            color: #fff;
+            background: linear-gradient(135deg, #7b4dff, #21d4fd, #ff4f9a);
+            box-shadow: 0 0 20px rgba(123, 77, 255, 0.4);
+        }
+
+        .mood-brand-name {
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: 0.06em;
+            background: linear-gradient(90deg, #ffffff, #a9a0ff, #72ddff, #ff8bce);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .mood-auth {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-size: 16px;
+            padding: 10px 20px;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.04);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+            .mood-auth:hover {
+                background: rgba(255, 255, 255, 0.08);
+                border-color: rgba(255, 255, 255, 0.15);
+            }
+
+        /* ===== دکمه سه‌خط ===== */
+        .menu-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            z-index: 1001;
+            position: relative;
+        }
+
+            .menu-toggle span {
+                display: block;
+                width: 28px;
+                height: 2.5px;
+                background: rgba(255, 255, 255, 0.8);
+                border-radius: 4px;
+                transition: all 0.3s ease;
+            }
+
+            .menu-toggle:hover span {
+                background: #fff;
+            }
+
+        /* ===== منوی کشویی (هماهنگ با خوشحالی) ===== */
+        .menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(6px);
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+            .menu-overlay.active {
+                opacity: 1;
+                visibility: visible;
+            }
+
+        .menu-panel {
+            position: fixed;
+            top: 0;
+            left: -340px;
+            width: 320px;
+            height: 100%;
+            background: linear-gradient(160deg, rgba(236, 72, 153, 0.95), rgba(251, 146, 60, 0.92));
+            backdrop-filter: blur(24px);
+            padding: 28px 24px;
+            box-shadow: 4px 0 50px rgba(0, 0, 0, 0.3);
+            transition: left 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+            display: flex;
+            flex-direction: column;
+            z-index: 2001;
+        }
+
+        .menu-overlay.active .menu-panel {
+            left: 0;
+        }
+
+        .menu-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+            margin-bottom: 24px;
+        }
+
+        .menu-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: 0.05em;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .menu-close {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 26px;
+            cursor: pointer;
+            transition: color 0.3s ease, transform 0.3s ease;
+            padding: 4px 8px;
+        }
+
+            .menu-close:hover {
+                color: #fff;
+                transform: rotate(90deg);
+            }
+
+        .menu-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex: 1;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 18px;
+            border-radius: 16px;
+            color: rgba(255, 255, 255, 0.85);
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid transparent;
+        }
+
+            .menu-item i {
+                font-size: 22px;
+                color: rgba(255, 255, 255, 0.7);
+                transition: color 0.3s ease;
+            }
+
+            .menu-item:hover {
+                background: rgba(255, 255, 255, 0.12);
+                border-color: rgba(255, 255, 255, 0.1);
+                color: #fff;
+                transform: translateX(4px);
+            }
+
+                .menu-item:hover i {
+                    color: #fff;
+                }
+
+        .menu-panel {
+            position: fixed;
+            top: 0;
+            left: -340px;
+            width: 320px;
+            height: 100%;
+            background: linear-gradient(160deg, rgba(236, 72, 153, 0.95), rgba(251, 146, 60, 0.92));
+            backdrop-filter: blur(24px);
+            padding: 28px 24px;
+            box-shadow: 4px 0 50px rgba(0, 0, 0, 0.3);
+            transition: left 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+            display: flex;
+            flex-direction: column;
+            z-index: 2001;
+            border-radius: 0 24px 24px 0; /* ← گوشه‌های راست گرد */
+        }
+
+        /* ===== محتوای اصلی ===== */
+        .happy-item {
+            max-width: 1000px;
+            width: 100%;
+            margin: 0 auto 30px;
+            padding: 24px 40px;
+            border-radius: 28px;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            color: #fef9c3;
+            font-size: 1.2rem;
+            text-align: center;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 8px 35px rgba(0, 0, 0, 0.25);
+            opacity: 0;
+            transition: opacity 0.6s ease, transform 0.6s ease;
+            transform: translateY(15px);
+        }
+
+            .happy-item.show {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+        .mood-grid {
+            max-width: 1000px;
+            width: 100%;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .mood-card {
+            width: 100%;
+            padding: 30px 35px;
+            border-radius: 28px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            color: #fff;
+            text-align: center;
+            backdrop-filter: blur(8px);
+            transition: all 0.3s ease;
+            cursor: default;
+            opacity: 0;
+            transform: translateY(15px);
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 24px;
+            box-shadow: 0 8px 35px rgba(0, 0, 0, 0.2);
+        }
+
+            .mood-card.show {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            .mood-card:hover {
+                transform: translateY(-4px) scale(1.01);
+                background: rgba(255, 255, 255, 0.25);
+                border-color: rgba(255, 255, 255, 0.12);
+                box-shadow: 0 12px 45px rgba(0, 0, 0, 0.3);
+            }
+
+            .mood-card .icon {
+                font-size: 48px;
+                flex-shrink: 0;
+                width: 70px;
+                text-align: center;
+                color: rgba(255, 255, 255, 0.9);
+            }
+
+            .mood-card .text {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                text-align: left;
+            }
+
+            .mood-card .title {
+                font-size: 22px;
+                font-weight: 700;
+                color: rgba(255, 255, 255, 0.95);
+                margin-bottom: 4px;
+            }
+
+            .mood-card .desc {
+                font-size: 16px;
+                color: rgba(255, 255, 255, 0.5);
+                line-height: 1.5;
+            }
+
+            .mood-card:last-child {
+                background: rgba(255, 255, 255, 0.15);
+                border-color: rgba(255, 215, 0, 0.08);
+                box-shadow: 0 8px 35px rgba(0, 0, 0, 0.2);
+                margin-bottom: 20px;
+            }
+
+                .mood-card:last-child:hover {
+                    background: rgba(255, 255, 255, 0.25);
+                    border-color: rgba(255, 215, 0, 0.12);
+                    box-shadow: 0 12px 45px rgba(0, 0, 0, 0.3);
+                }
+
+        .mood-card-link {
+            text-decoration: none !important;
+            display: block;
+            width: 100%;
+        }
+
+            .mood-card-link:hover .mood-card {
+                transform: translateY(-4px) scale(1.01);
+                background: rgba(255, 255, 255, 0.25);
+                border-color: rgba(255, 255, 255, 0.12);
+                box-shadow: 0 12px 45px rgba(0, 0, 0, 0.3);
+            }
+
+            .mood-card-link:visited,
+            .mood-card-link:active,
+            .mood-card-link:focus {
+                text-decoration: none !important;
+                color: inherit !important;
+            }
+
+            .mood-card-link .mood-card {
+                transition: all 0.3s ease;
+            }
+    </style>
+</head>
+
+<body>
+
+    <!-- ===== هدر ===== -->
+    <header class="mood-header">
+        <button class="menu-toggle" id="menuToggle" aria-label="منو">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <a href="/" class="mood-brand">
+            <div class="mood-logo">M</div>
+            <span class="mood-brand-name">MŌOD</span>
+        </a>
+
+        <a href="/Login" class="mood-auth">
+            <span>ورود</span>
+            <span style="opacity:0.4;">/</span>
+            <span>ثبت‌نام</span>
+        </a>
+    </header>
+
+    <!-- ===== منوی کشویی ===== -->
+    <div class="menu-overlay" id="menuOverlay">
+        <div class="menu-panel">
+            <div class="menu-header">
+                <span class="menu-title">منو</span>
+                <button class="menu-close" id="menuClose">✕</button>
+            </div>
+            <nav class="menu-nav">
+                <a asp-controller="History" asp-action="Index" class="menu-item" style="text-decoration: none; display: block; width: 100%;">
+                    <i class="bi bi-clock-history"></i>
+                    <span>تاریخچه</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="bi bi-gear"></i>
+                    <span>تنظیمات</span>
+                </a>
+            </nav>
+        </div>
+    </div>
+
+    <!-- ===== نقل قول ===== -->
+    <div class="happy-item" id="daily-quote">
+        «خوشبختی زمانی شروع میشه که بپذیری خودت همون‌قدر که هستی، کامل هستی.»
+    </div>
+
+    <!-- ===== کادرها ===== -->
+   
+    <div class="mood-grid" id="moodGrid">
+        <a asp-controller="Music" asp-action="Index" class="mood-card-link" style="text-decoration: none; display: block; width: 100%;">
+            <div class="mood-card" style="cursor: pointer;">
+                <span class="icon"><i class="bi bi-music-note-beamed"></i></span>
+                <div class="text">
+                    <div class="title">موزیک</div>
+                    <div class="desc">یه آهنگ شاد بذار روشن</div>
+                </div>
+            </div>
+        </a>
+        <a asp-controller="Creative" asp-action="Index" class="mood-card-link" style="text-decoration: none; display: block; width: 100%;">
+            <div class="mood-card">
+            <span class="icon"><i class="bi bi-palette"></i></span>
+            <div class="text">
+                <div class="title">فعالیت خلاقانه</div>
+                <div class="desc">نقاشی بکش یا شعر بنویس</div>
+            </div>
+        </div>
+        </a>
+                <a asp-controller="Message" asp-action="Index" class="mood-card-link" style="text-decoration: none; display: block; width: 100%;">
+        <div class="mood-card">
+            <span class="icon"><i class="bi bi-chat-dots"></i></span>
+            <div class="text">
+                <div class="title">پیام شاد</div>
+                <div class="desc">یه پیام خوش‌حال کننده بفرست</div>
+            </div>
+        </div>
+        </a>
+                        <a asp-controller="SaveTheMoment" asp-action="Index" class="mood-card-link" style="text-decoration: none; display: block; width: 100%;">
+        <div class="mood-card">
+            <span class="icon"><i class="bi bi-clock-history"></i></span>
+            <div class="text">
+                <div class="title">Save the Moment</div>
+                <div class="desc">این لحظه رو ذخیره کن تا همیشه یادت بمونه</div>
+            </div>
+        </div>
+        </a>
+    </div>
+
+    <script>
+        const quotes = [
+            "«خوشبختی زمانی شروع میشه که بپذیری خودت همون‌قدر که هستی، کامل هستی.»",
+            "«لبخند بزن، چون زندگی زیباست.»",
+            "«امروز روز خوبیه، پس ازش لذت ببر.»",
+            "«شادی یک انتخاب است، نه یک نتیجه.»",
+            "«هر روز فرصتی جدید برای شاد بودن است.»",
+            "«خوشبختی یعنی همین لحظه.»",
+            "«قدرت در لبخند توست.»"
+        ];
+
+        function showRandomQuote() {
+            const randomIndex = Math.floor(Math.random() * quotes.length);
+            const el = document.getElementById('daily-quote');
+            if (el) {
+                el.textContent = quotes[randomIndex];
+                el.classList.remove('show');
+                setTimeout(() => {
+                    el.classList.add('show');
+                }, 10);
+            }
+        }
+
+        function showCards() {
+            const cards = document.querySelectorAll('.mood-card');
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.classList.add('show');
+                }, 150 + (index * 80));
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const el = document.getElementById('daily-quote');
+            setTimeout(() => {
+                el.classList.add('show');
+            }, 100);
+            showRandomQuote();
+            showCards();
+        });
+
+        // ===== منوی همبرگری =====
+        const menuToggle = document.getElementById('menuToggle');
+        const menuOverlay = document.getElementById('menuOverlay');
+        const menuClose = document.getElementById('menuClose');
+
+        if (menuToggle && menuOverlay && menuClose) {
+            menuToggle.addEventListener('click', () => {
+                menuOverlay.classList.add('active');
+            });
+
+            menuClose.addEventListener('click', () => {
+                menuOverlay.classList.remove('active');
+            });
+
+            menuOverlay.addEventListener('click', (e) => {
+                if (e.target === menuOverlay) {
+                    menuOverlay.classList.remove('active');
+                }
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    menuOverlay.classList.remove('active');
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>

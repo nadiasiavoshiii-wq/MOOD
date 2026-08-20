@@ -1,0 +1,197 @@
+﻿/* ================================
+   MŌOD LOADING SCREEN
+================================ */
+
+.mood-loader {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: radial-gradient(circle at 50% 50%, #111a45 0%, #0b1030 45%, #06091d 100%);
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.9s ease, visibility 0.9s ease;
+}
+
+.mood-loader-content {
+    position: relative;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* لوگو */
+.mood-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    font-size: clamp(5rem, 14vw, 10rem);
+    font-weight: 900;
+    letter-spacing: 0.04em;
+    color: #ffffff;
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.35), 0 0 40px rgba(120, 130, 255, 0.35);
+    filter: drop-shadow(0 0 30px rgba(100, 120, 255, 0.3));
+}
+
+    .mood-logo span {
+        display: inline-block;
+        opacity: 0;
+        transform: translateY(25px) scale(0.85);
+        background: linear-gradient(135deg, #ffffff 10%, #9d8cff 35%, #65d8ff 55%, #ff78c8 75%, #ffffff 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: mood-letter 2.1s ease forwards;
+    }
+
+        .mood-logo span:nth-child(1) {
+            animation-delay: 0.15s;
+        }
+
+        .mood-logo span:nth-child(2) {
+            animation-delay: 0.55s;
+        }
+
+        .mood-logo span:nth-child(3) {
+            animation-delay: 0.95s;
+        }
+
+        .mood-logo span:nth-child(4) {
+            animation-delay: 1.35s;
+        }
+
+@keyframes mood-letter {
+    0% {
+        opacity: 0;
+        transform: translateY(30px) scale(0.8);
+        filter: blur(12px);
+    }
+
+    35% {
+        opacity: 1;
+        transform: translateY(-5px) scale(1.08);
+        filter: blur(0);
+        text-shadow: 0 0 20px rgba(255,255,255,0.8), 0 0 45px rgba(120,140,255,0.8);
+    }
+
+    65% {
+        transform: translateY(0) scale(1);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* هاله‌های رنگی */
+.mood-orb {
+    position: absolute;
+    width: 420px;
+    height: 420px;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.28;
+    pointer-events: none;
+    animation: mood-orb-move 7s ease-in-out infinite alternate;
+}
+
+.orb-1 {
+    top: -130px;
+    left: -120px;
+    background: #7b4dff;
+    animation-delay: -2s;
+}
+
+.orb-2 {
+    right: -120px;
+    top: 10%;
+    background: #21d4fd;
+    animation-delay: -4s;
+}
+
+.orb-3 {
+    left: 10%;
+    bottom: -180px;
+    background: #ff4f9a;
+    animation-delay: -1s;
+}
+
+.orb-4 {
+    right: 15%;
+    bottom: -200px;
+    background: #ffd166;
+    animation-delay: -5s;
+}
+
+@keyframes mood-orb-move {
+    0% {
+        transform: translate3d(-30px, -20px, 0) scale(1);
+    }
+
+    50% {
+        transform: translate3d(35px, 25px, 0) scale(1.12);
+    }
+
+    100% {
+        transform: translate3d(-15px, 40px, 0) scale(0.95);
+    }
+}
+
+/* خط بارگذاری */
+.mood-loading-line {
+    width: 0;
+    height: 2.5px;
+    margin-top: 18px;
+    border-radius: 50px;
+    background: linear-gradient(90deg, #8c7cff, #5ce1e6, #ff73c8, #ffd166);
+    box-shadow: 0 0 15px rgba(130, 150, 255, 0.8);
+    animation: mood-line 1.8s ease 0.25s forwards;
+}
+
+@keyframes mood-line {
+    0% {
+        width: 0;
+        opacity: 0;
+    }
+
+    30% {
+        opacity: 1;
+    }
+
+    100% {
+        width: 190px;
+        opacity: 1;
+    }
+}
+
+/* خروج لودینگ */
+.mood-loader-hide {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+@media (max-width: 600px) {
+    .mood-logo {
+        font-size: 5rem;
+        gap: 2px;
+    }
+
+    .mood-orb {
+        width: 280px;
+        height: 280px;
+        filter: blur(65px);
+    }
+
+    .mood-loading-line {
+        margin-top: 12px;
+    }
+}

@@ -1,0 +1,635 @@
+﻿@{
+    ViewData["Title"] = "تاریخچه احساسات | MŌOD";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(145deg, #ec4899 0%, #f472b6 35%, #fb923c 65%, #fbbf24 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 100px clamp(16px, 5vw, 60px) 50px;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            overflow-y: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+            body::-webkit-scrollbar {
+                display: none;
+            }
+
+        .mood-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px clamp(20px, 4vw, 50px);
+            background: rgba(11, 16, 48, 0.30);
+            backdrop-filter: blur(24px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .mood-brand {
+            display: flex;
+            align-items: center;
+            gap: clamp(8px, 1.5vw, 14px);
+            text-decoration: none;
+        }
+
+        .mood-logo {
+            width: clamp(38px, 5vw, 48px);
+            height: clamp(38px, 5vw, 48px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 14px;
+            font-size: clamp(18px, 2.5vw, 22px);
+            font-weight: 900;
+            color: #fff;
+            background: linear-gradient(135deg, #7b4dff, #21d4fd, #ff4f9a);
+            box-shadow: 0 0 20px rgba(123, 77, 255, 0.4);
+        }
+
+        .mood-brand-name {
+            font-size: clamp(20px, 3vw, 28px);
+            font-weight: 800;
+            letter-spacing: 0.06em;
+            background: linear-gradient(90deg, #ffffff, #a9a0ff, #72ddff, #ff8bce);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .mood-auth {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-size: clamp(13px, 1.5vw, 16px);
+            padding: clamp(6px, 1.2vw, 10px) clamp(12px, 2vw, 20px);
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.04);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+            .mood-auth:hover {
+                background: rgba(255, 255, 255, 0.08);
+                border-color: rgba(255, 255, 255, 0.15);
+            }
+
+        .menu-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            z-index: 1001;
+            position: relative;
+        }
+
+            .menu-toggle span {
+                display: block;
+                width: 28px;
+                height: 2.5px;
+                background: rgba(255, 255, 255, 0.8);
+                border-radius: 4px;
+                transition: all 0.3s ease;
+            }
+
+            .menu-toggle:hover span {
+                background: #fff;
+            }
+
+        .menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(6px);
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+            .menu-overlay.active {
+                opacity: 1;
+                visibility: visible;
+            }
+
+        .menu-panel {
+            position: fixed;
+            top: 0;
+            left: -340px;
+            width: clamp(280px, 30vw, 320px);
+            height: 100%;
+            background: linear-gradient(160deg, rgba(236, 72, 153, 0.95), rgba(251, 146, 60, 0.92));
+            backdrop-filter: blur(24px);
+            padding: 28px clamp(16px, 3vw, 24px);
+            box-shadow: 4px 0 50px rgba(0, 0, 0, 0.3);
+            transition: left 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+            display: flex;
+            flex-direction: column;
+            z-index: 2001;
+            border-radius: 0 24px 24px 0;
+        }
+
+        .menu-overlay.active .menu-panel {
+            left: 0;
+        }
+
+        .menu-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+            margin-bottom: 24px;
+        }
+
+        .menu-title {
+            font-size: clamp(18px, 2.5vw, 22px);
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: 0.05em;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .menu-close {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 26px;
+            cursor: pointer;
+            transition: color 0.3s ease, transform 0.3s ease;
+            padding: 4px 8px;
+        }
+
+            .menu-close:hover {
+                color: #fff;
+                transform: rotate(90deg);
+            }
+
+        .menu-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex: 1;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 18px;
+            border-radius: 16px;
+            color: rgba(255, 255, 255, 0.85);
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid transparent;
+        }
+
+            .menu-item i {
+                font-size: 22px;
+                color: rgba(255, 255, 255, 0.7);
+                transition: color 0.3s ease;
+            }
+
+            .menu-item:hover {
+                background: rgba(255, 255, 255, 0.12);
+                border-color: rgba(255, 255, 255, 0.1);
+                color: #fff;
+                transform: translateX(4px);
+            }
+
+                .menu-item:hover i {
+                    color: #fff;
+                }
+
+        .history-card {
+            max-width: 1000px;
+            width: 100%;
+            padding: clamp(30px, 5vw, 50px) clamp(20px, 4vw, 40px);
+            border-radius: 28px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(8px);
+            box-shadow: 0 8px 35px rgba(0, 0, 0, 0.2);
+            color: #fff;
+            margin-top: 20px;
+        }
+
+        .history-title {
+            font-size: clamp(24px, 3.5vw, 32px);
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, #fef08a, #fbbf24, #f59e0b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .day-card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 20px;
+            padding: 18px 22px;
+            margin-bottom: 16px;
+            transition: 0.3s ease;
+        }
+
+            .day-card:hover {
+                background: rgba(255, 255, 255, 0.08);
+            }
+
+        .day-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .day-date {
+            font-size: 18px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .day-mood {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .day-mood-emoji {
+            font-size: 28px;
+        }
+
+        .day-divider {
+            border: none;
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
+            margin: 12px 0;
+        }
+
+        .day-section {
+            margin-top: 10px;
+        }
+
+        .day-section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .day-item {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 10px 14px;
+            margin-bottom: 6px;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+
+            .day-item img {
+                width: 40px;
+                height: 40px;
+                border-radius: 8px;
+                object-fit: cover;
+                flex-shrink: 0;
+            }
+
+        .day-item-time {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.3);
+            white-space: nowrap;
+        }
+
+        .empty-history {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.3);
+            padding: 40px 0;
+            font-size: 16px;
+        }
+
+        .back-to-happy {
+            text-align: center;
+            margin-top: 28px;
+        }
+
+            .back-to-happy a {
+                display: inline-block;
+                padding: 12px 30px;
+                border-radius: 40px;
+                border: 1px solid rgba(255, 255, 255, 0.15);
+                background: rgba(255, 255, 255, 0.06);
+                color: rgba(255, 255, 255, 0.7);
+                text-decoration: none;
+                font-size: 15px;
+                font-weight: 500;
+                transition: all 0.3s ease;
+                backdrop-filter: blur(8px);
+            }
+
+                .back-to-happy a:hover {
+                    background: rgba(255, 255, 255, 0.15);
+                    color: #fff;
+                    transform: translateY(-2px);
+                }
+    </style>
+</head>
+
+<body>
+
+    <header class="mood-header">
+        <button class="menu-toggle" id="menuToggle" aria-label="منو">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <a href="/" class="mood-brand">
+            <div class="mood-logo">M</div>
+            <span class="mood-brand-name">MŌOD</span>
+        </a>
+
+        <a href="/Login" class="mood-auth">
+            <span>ورود</span>
+            <span style="opacity:0.4;">/</span>
+            <span>ثبت‌نام</span>
+        </a>
+    </header>
+
+    <div class="menu-overlay" id="menuOverlay">
+        <div class="menu-panel">
+            <div class="menu-header">
+                <span class="menu-title">منو</span>
+                <button class="menu-close" id="menuClose">✕</button>
+            </div>
+            <nav class="menu-nav">
+                <a href="#" class="menu-item">
+                    <i class="bi bi-clock-history"></i>
+                    <span>تاریخچه</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="bi bi-gear"></i>
+                    <span>تنظیمات</span>
+                </a>
+            </nav>
+        </div>
+    </div>
+
+    <div class="history-card">
+        <h4 style="
+    color: rgba(255,255,255,0.8);
+    text-align: center;
+    margin-bottom: 28px;
+    font-weight: 600;
+    font-size: 18px;
+    letter-spacing: 0.5px;
+">
+            حس و حالتو ببین:
+        </h4>
+        <div id="historyContainer"></div>
+        <div class="back-to-happy">
+            <a href="/Happy">← برگشت به صفحه خوشحالی</a>
+        </div>
+    </div>
+
+    <script>
+        // ===== دریافت همه‌ی داده‌ها از localStorage =====
+        function getAllData() {
+            const moods = JSON.parse(localStorage.getItem('moodHistory')) || [];
+            const messages = JSON.parse(localStorage.getItem('happyMessages')) || [];
+            const lyrics = JSON.parse(localStorage.getItem('savedLyrics')) || [];
+            const drawings = JSON.parse(localStorage.getItem('savedDrawings')) || [];
+            const moments = JSON.parse(localStorage.getItem('moments')) || [];
+
+            return { moods, messages, lyrics, drawings, moments };
+        }
+
+        // ===== گروه‌بندی بر اساس تاریخ =====
+        function groupByDate(items, type) {
+            const groups = {};
+            items.forEach(item => {
+                const dateKey = item.date.split(' ')[0]; // فقط تاریخ (بدون ساعت)
+                if (!groups[dateKey]) groups[dateKey] = [];
+                groups[dateKey].push({ ...item, type });
+            });
+            return groups;
+        }
+
+        function renderHistory() {
+            const data = getAllData();
+            const container = document.getElementById('historyContainer');
+
+            // گروه‌بندی همه‌چیز بر اساس تاریخ
+            const allGroups = {};
+
+            // احساسات
+            data.moods.forEach(m => {
+                const dateKey = m.date.split(' ')[0];
+                if (!allGroups[dateKey]) allGroups[dateKey] = { moods: [], messages: [], lyrics: [], drawings: [],
+                    moments: [] };
+                allGroups[dateKey].moods.push(m);
+            });
+
+            // پیام‌ها
+            data.messages.forEach(m => {
+                const dateKey = m.date.split(' ')[0];
+                if (!allGroups[dateKey]) allGroups[dateKey] = { moods: [], messages: [], lyrics: [], drawings: [],
+                    moments: [] };
+                allGroups[dateKey].messages.push(m);
+            });
+
+            // آهنگ‌ها
+            data.lyrics.forEach(m => {
+                const dateKey = m.date.split(' ')[0];
+                if (!allGroups[dateKey]) allGroups[dateKey] = { moods: [], messages: [], lyrics: [], drawings: [],
+                    moments: [] };
+                allGroups[dateKey].lyrics.push(m);
+            });
+
+            // نقاشی‌ها
+            data.drawings.forEach(m => {
+                const dateKey = m.date.split(' ')[0];
+                if (!allGroups[dateKey]) allGroups[dateKey] = { moods: [], messages: [], lyrics: [], drawings: [],
+                    moments: [] };
+                allGroups[dateKey].drawings.push(m);
+            });
+
+            // لحظات (عکس‌ها)
+            data.moments.forEach(m => {
+                const dateKey = m.date.split(' ')[0];
+                if (!allGroups[dateKey]) allGroups[dateKey] = { moods: [], messages: [], lyrics: [], drawings: [],
+                    moments: [] };
+                allGroups[dateKey].moments.push(m);
+            });
+
+            const sortedDates = Object.keys(allGroups).sort((a, b) => new Date(b) - new Date(a));
+
+            if (sortedDates.length === 0) {
+                container.innerHTML = `<div class="empty-history">هنوز هیچ فعالیتی ثبت نکردی 😊</div>`;
+                return;
+            }
+
+            let html = '';
+            sortedDates.forEach(dateKey => {
+                const day = allGroups[dateKey];
+                const moodEmoji = day.moods.length > 0 ? day.moods[0].emoji || '😊' : '😐';
+                const moodName = day.moods.length > 0 ? day.moods[0].mood || 'نامشخص' : 'نامشخص';
+
+                html += `
+                    <div class="day-card">
+                        <div class="day-header">
+                            <span class="day-date">${dateKey}</span>
+                            <span class="day-mood">
+                                <span class="day-mood-emoji">${moodEmoji}</span>
+                                ${moodName}
+                            </span>
+                        </div>
+                `;
+
+                // ===== پیام‌ها =====
+                if (day.messages.length > 0) {
+                    html += `
+                        <hr class="day-divider" />
+                        <div class="day-section">
+                            <div class="day-section-title"><i class="bi bi-chat-dots"></i> پیام‌ها</div>
+                            ${day.messages.map(msg => `
+                                <div class="day-item">
+                                    <span>${escapeHtml(msg.text)}</span>
+                                    <span class="day-item-time">${msg.date.split(' ')[1] || ''}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                }
+
+                // ===== آهنگ‌ها =====
+                if (day.lyrics.length > 0) {
+                    html += `
+                        <hr class="day-divider" />
+                        <div class="day-section">
+                            <div class="day-section-title"><i class="bi bi-music-note-beamed"></i> آهنگ‌ها</div>
+                            ${day.lyrics.map(item => `
+                                <div class="day-item">
+                                    <span>${escapeHtml(item.text)}</span>
+                                    <span class="day-item-time">${item.date.split(' ')[1] || ''}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                }
+
+                // ===== نقاشی‌ها =====
+                if (day.drawings.length > 0) {
+                    html += `
+                        <hr class="day-divider" />
+                        <div class="day-section">
+                            <div class="day-section-title"><i class="bi bi-palette"></i> نقاشی‌ها</div>
+                            ${day.drawings.map(item => `
+                                <div class="day-item">
+                                    <img src="${item.image}" alt="نقاشی" />
+                                    <span>نقاشی</span>
+                                    <span class="day-item-time">${item.date.split(' ')[1] || ''}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                }
+
+                // ===== لحظات (عکس‌ها) =====
+                if (day.moments.length > 0) {
+                    html += `
+                        <hr class="day-divider" />
+                        <div class="day-section">
+                            <div class="day-section-title"><i class="bi bi-images"></i> لحظات</div>
+                            ${day.moments.map(item => `
+                                <div class="day-item">
+                                    <img src="${item.image}" alt="لحظه" />
+                                    <span>${escapeHtml(item.caption)}</span>
+                                    <span class="day-item-time">${item.date.split(' ')[1] || ''}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                }
+
+                html += `</div>`;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // بارگذاری اولیه
+        renderHistory();
+
+        // ===== منو =====
+        const menuToggle = document.getElementById('menuToggle');
+        const menuOverlay = document.getElementById('menuOverlay');
+        const menuClose = document.getElementById('menuClose');
+
+        if (menuToggle && menuOverlay && menuClose) {
+            menuToggle.addEventListener('click', () => menuOverlay.classList.add('active'));
+            menuClose.addEventListener('click', () => menuOverlay.classList.remove('active'));
+            menuOverlay.addEventListener('click', (e) => {
+                if (e.target === menuOverlay) menuOverlay.classList.remove('active');
+            });
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') menuOverlay.classList.remove('active');
+            });
+        }
+    </script>
+
+</body>
+</html>

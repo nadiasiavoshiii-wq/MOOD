@@ -1,0 +1,169 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - MOOD</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/MOOD.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/mood-loader.css" asp-append-version="true" />
+    <link rel="stylesheet"
+          href="~/css/mood-background.css"
+          asp-append-version="true" />
+    <link rel="stylesheet"
+          href="~/css/mood-header.css"
+          asp-append-version="true" />
+    <link rel="stylesheet"
+          href="~/css/mood-home.css"
+          asp-append-version="true" />
+          <link rel="stylesheet" href="~/css/mood-happy.css" asp-append-version="true"/>
+</head>
+<body>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted" style="text-align:center;">
+       MOOD site
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+    <!-- ===== اسکریپت‌های MŌOD ===== -->
+    <script>
+        (function () {
+            'use strict';
+
+            console.log('🚀 MŌOD: فایل JS بارگذاری شد!');
+
+            // ===== عناصر DOM =====
+            const loader = document.getElementById('mood-loader');
+            const startBtn = document.getElementById('startMood');
+            const introStep = document.getElementById('introStep');
+            const optionsStep = document.getElementById('optionsStep');
+            const moodCard = document.getElementById('moodCard');
+            const feelingBtns = document.querySelectorAll('.feeling-button');
+
+            // ============================================================
+            // ۱. لودینگ (با چندین روش پشتیبان)
+            // ============================================================
+
+            function hideLoader() {
+                if (!loader) {
+                    console.warn('⚠️ لودینگ پیدا نشد!');
+                    return;
+                }
+
+                console.log('🔄 در حال مخفی کردن لودینگ...');
+
+                // روش اول: کلاس CSS
+                loader.classList.add('mood-loader-hide');
+
+                // روش دوم: استایل مستقیم (برای اطمینان)
+                loader.style.opacity = '0';
+                loader.style.visibility = 'hidden';
+                loader.style.pointerEvents = 'none';
+
+                // روش سوم: display none بعد از اتمام انیمیشن
+                setTimeout(function () {
+                    loader.style.display = 'none';
+                    console.log('✅ لودینگ با موفقیت حذف شد!');
+                }, 900);
+
+                // روش چهارم: حذف کامل از DOM (ایمن‌تر)
+                setTimeout(function () {
+                    if (loader && loader.parentNode) {
+                        loader.remove();
+                        console.log('✅ لودینگ از DOM حذف شد!');
+                    }
+                }, 1000);
+            }
+
+            // ===== اجرای لودینگ =====
+            function initLoader() {
+                // اگه صفحه کامل لود شده، بلافاصله تایمر رو شروع کن
+                if (document.readyState === 'complete') {
+                    console.log('✅ صفحه از قبل کامل بود!');
+                    setTimeout(function () {
+                        hideLoader();
+                    }, 2400);
+                } else {
+                    // در غیر این صورت منتظر لود کامل بشو
+                    window.addEventListener('load', function () {
+                        console.log('✅ صفحه کاملاً لود شد!');
+                        setTimeout(function () {
+                            hideLoader();
+                        }, 2400);
+                    });
+                }
+            }
+
+            // اجرای لودینگ
+            initLoader();
+
+            // ============================================================
+            // ۲. انتقال از سوال اول به دوم
+            // ============================================================
+
+            if (startBtn) {
+                startBtn.addEventListener('click', function () {
+                    console.log('✅ دکمه "بزن بریم" کلیک شد!');
+
+                    if (introStep) {
+                        introStep.classList.add('hide');
+                    }
+
+                    if (moodCard) {
+                        moodCard.style.minHeight = '500px';
+                    }
+
+                    setTimeout(function () {
+                        if (optionsStep) {
+                            optionsStep.classList.add('show');
+                            console.log('✅ دکمه‌های احساسات نمایش داده شدند!');
+                        }
+                    }, 350);
+                });
+            } else {
+                console.warn('⚠️ دکمه "startMood" پیدا نشد!');
+            }
+
+            // ============================================================
+            // ۳. انتخاب احساس و تغییر کل سایت
+            // ============================================================
+
+            
+
+            feelingBtns.forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    const mood = this.dataset.mood;
+                    const theme = moodThemes[mood];
+
+                    if (!theme) {
+                        console.warn('⚠️ حالت نامعتبر:', mood);
+                        return;
+                    }
+
+                    console.log(`🎨 حالت انتخاب شد: ${mood} (${theme.emoji})`);
+
+                    // تغییر پس‌زمینه body
+                    document.body.style.background = theme.gradient;
+                    document.body.style.transition = 'background 1s ease';
+
+                    // تغییر رنگ آکسان
+                    document.documentElement.style.setProperty('--mood-accent', theme.accent);
+
+                    // آپدیت عنوان صفحه (اختیاری)
+                    document.title = `MŌOD - ${theme.emoji} ${mood}`;
+                });
+            });
+
+            console.log('✅ MŌOD: همه چیز آماده است!');
+        })();
+    </script>
+</body>
+</html>
