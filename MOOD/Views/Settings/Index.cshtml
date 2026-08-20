@@ -1,0 +1,982 @@
+﻿@{
+    ViewData["Title"] = "تنظیمات | MŌOD";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(145deg, #ec4899 0%, #f472b6 35%, #fb923c 65%, #fbbf24 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 100px clamp(16px, 5vw, 60px) 50px;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            overflow-y: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+            body::-webkit-scrollbar {
+                display: none;
+            }
+
+        .mood-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px clamp(20px, 4vw, 50px);
+            background: rgba(11, 16, 48, 0.30);
+            backdrop-filter: blur(24px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .mood-brand {
+            display: flex;
+            align-items: center;
+            gap: clamp(8px, 1.5vw, 14px);
+            text-decoration: none;
+        }
+
+        .mood-logo {
+            width: clamp(38px, 5vw, 48px);
+            height: clamp(38px, 5vw, 48px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 14px;
+            font-size: clamp(18px, 2.5vw, 22px);
+            font-weight: 900;
+            color: #fff;
+            background: linear-gradient(135deg, #7b4dff, #21d4fd, #ff4f9a);
+            box-shadow: 0 0 20px rgba(123, 77, 255, 0.4);
+        }
+
+        .mood-brand-name {
+            font-size: clamp(20px, 3vw, 28px);
+            font-weight: 800;
+            letter-spacing: 0.06em;
+            background: linear-gradient(90deg, #ffffff, #a9a0ff, #72ddff, #ff8bce);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        #authSection {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .mood-auth {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-size: clamp(13px, 1.5vw, 16px);
+            padding: clamp(6px, 1.2vw, 10px) clamp(12px, 2vw, 20px);
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.04);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+            .mood-auth:hover {
+                background: rgba(255, 255, 255, 0.08);
+                border-color: rgba(255, 255, 255, 0.15);
+            }
+
+        .auth-profile-card {
+            display: none;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 12px 6px 18px;
+            border-radius: 40px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            transition: 0.3s ease;
+            cursor: pointer;
+        }
+
+            .auth-profile-card:hover {
+                background: rgba(255, 255, 255, 0.10);
+                border-color: rgba(255, 255, 255, 0.08);
+            }
+
+            .auth-profile-card .user-name {
+                color: #fff;
+                font-weight: 500;
+                font-size: 14px;
+                white-space: nowrap;
+            }
+
+            .auth-profile-card .avatar {
+                width: 34px;
+                height: 34px;
+                border-radius: 50%;
+                overflow: hidden;
+                border: 2px solid rgba(255, 255, 255, 0.08);
+                flex-shrink: 0;
+            }
+
+                .auth-profile-card .avatar img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    display: none;
+                }
+
+                .auth-profile-card .avatar .placeholder {
+                    width: 100%;
+                    height: 100%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 16px;
+                    color: rgba(255, 255, 255, 0.3);
+                    background: rgba(255, 255, 255, 0.04);
+                }
+
+        .menu-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            z-index: 1001;
+            position: relative;
+        }
+
+            .menu-toggle span {
+                display: block;
+                width: 28px;
+                height: 2.5px;
+                background: rgba(255, 255, 255, 0.8);
+                border-radius: 4px;
+                transition: all 0.3s ease;
+            }
+
+            .menu-toggle:hover span {
+                background: #fff;
+            }
+
+        .menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(6px);
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+            .menu-overlay.active {
+                opacity: 1;
+                visibility: visible;
+            }
+
+        .menu-panel {
+            position: fixed;
+            top: 0;
+            left: -340px;
+            width: clamp(280px, 30vw, 320px);
+            height: 100%;
+            background: linear-gradient(160deg, rgba(236, 72, 153, 0.95), rgba(251, 146, 60, 0.92));
+            backdrop-filter: blur(24px);
+            padding: 28px clamp(16px, 3vw, 24px);
+            box-shadow: 4px 0 50px rgba(0, 0, 0, 0.3);
+            transition: left 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+            display: flex;
+            flex-direction: column;
+            z-index: 2001;
+            border-radius: 0 24px 24px 0;
+        }
+
+        .menu-overlay.active .menu-panel {
+            left: 0;
+        }
+
+        .menu-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+            margin-bottom: 24px;
+        }
+
+        .menu-title {
+            font-size: clamp(18px, 2.5vw, 22px);
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: 0.05em;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .menu-close {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 26px;
+            cursor: pointer;
+            transition: color 0.3s ease, transform 0.3s ease;
+            padding: 4px 8px;
+        }
+
+            .menu-close:hover {
+                color: #fff;
+                transform: rotate(90deg);
+            }
+
+        .menu-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex: 1;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 18px;
+            border-radius: 16px;
+            color: rgba(255, 255, 255, 0.85);
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid transparent;
+        }
+
+            .menu-item i {
+                font-size: 22px;
+                color: rgba(255, 255, 255, 0.7);
+                transition: color 0.3s ease;
+            }
+
+            .menu-item:hover {
+                background: rgba(255, 255, 255, 0.12);
+                border-color: rgba(255, 255, 255, 0.1);
+                color: #fff;
+                transform: translateX(4px);
+            }
+
+                .menu-item:hover i {
+                    color: #fff;
+                }
+
+        .settings-card {
+            max-width: 800px;
+            width: 100%;
+            padding: clamp(30px, 5vw, 50px) clamp(20px, 4vw, 40px);
+            border-radius: 28px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(8px);
+            box-shadow: 0 8px 35px rgba(0, 0, 0, 0.2);
+            color: #fff;
+            margin-top: 20px;
+        }
+
+        .settings-title {
+            font-size: clamp(24px, 3.5vw, 32px);
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 28px;
+            background: linear-gradient(135deg, #fef08a, #fbbf24, #f59e0b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* ===== پروفایل (بدون کادر اضافی) ===== */
+        .profile-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+
+        .profile-avatar {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.06);
+            border: 2px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 44px;
+            color: rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: 0.3s ease;
+            overflow: hidden;
+            position: relative;
+            margin-bottom: 14px;
+        }
+
+            .profile-avatar:hover {
+                border-color: rgba(255, 215, 0, 0.2);
+                background: rgba(255, 255, 255, 0.08);
+            }
+
+            .profile-avatar img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+            .profile-avatar .upload-overlay {
+                position: absolute;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.4);
+                backdrop-filter: blur(4px);
+                display: none;
+                align-items: center;
+                justify-content: center;
+                font-size: 13px;
+                font-weight: 500;
+                color: rgba(255, 255, 255, 0.8);
+                text-align: center;
+                padding: 4px;
+            }
+
+            .profile-avatar:hover .upload-overlay {
+                display: flex;
+            }
+
+        .profile-name {
+            font-size: 22px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 2px;
+        }
+
+        .profile-email {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .profile-login-prompt {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.3);
+            margin-top: 4px;
+        }
+
+        .settings-options {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-top: 8px;
+        }
+
+        .settings-option {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 18px;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            transition: 0.3s ease;
+            cursor: pointer;
+        }
+
+            .settings-option:hover {
+                background: rgba(255, 255, 255, 0.18);
+                border-color: rgba(255, 255, 255, 0.08);
+            }
+
+        .settings-option-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+            .settings-option-left i {
+                font-size: 20px;
+                color: rgba(255, 255, 255, 0.6);
+                width: 28px;
+                text-align: center;
+            }
+
+            .settings-option-left span {
+                font-size: 15px;
+                color: #ffffff;
+                font-weight: 500;
+            }
+
+        .settings-option-right {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+            .settings-option-right i {
+                font-size: 14px;
+            }
+
+        .font-size-control {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 18px;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.10);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+            .font-size-control label {
+                font-size: 14px;
+                color: rgba(255, 255, 255, 0.7);
+                min-width: 100px;
+            }
+
+            .font-size-control input[type="range"] {
+                flex: 1;
+                accent-color: #fbbf24;
+                height: 4px;
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 10px;
+                outline: none;
+            }
+
+                .font-size-control input[type="range"]::-webkit-slider-thumb {
+                    -webkit-appearance: none;
+                    width: 16px;
+                    height: 16px;
+                    border-radius: 50%;
+                    background: #fbbf24;
+                    cursor: pointer;
+                }
+
+            .font-size-control span {
+                font-size: 14px;
+                color: rgba(255, 255, 255, 0.6);
+                min-width: 40px;
+                text-align: center;
+            }
+
+        .font-family-select {
+            padding: 10px 16px;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, 0.04);
+            color: #fff;
+            font-size: 14px;
+            outline: none;
+            cursor: pointer;
+            width: 100%;
+            max-width: 200px;
+        }
+
+            .font-family-select option {
+                background: #1a1a2e;
+                color: #fff;
+            }
+
+        .back-to-happy {
+            text-align: center;
+            margin-top: 28px;
+        }
+
+            .back-to-happy a {
+                display: inline-block;
+                padding: 12px 30px;
+                border-radius: 40px;
+                border: 1px solid rgba(255, 255, 255, 0.15);
+                background: rgba(255, 255, 255, 0.06);
+                color: rgba(255, 255, 255, 0.7);
+                text-decoration: none;
+                font-size: 15px;
+                font-weight: 500;
+                transition: all 0.3s ease;
+                backdrop-filter: blur(8px);
+            }
+
+                .back-to-happy a:hover {
+                    background: rgba(255, 255, 255, 0.15);
+                    color: #fff;
+                    transform: translateY(-2px);
+                }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+            .modal-overlay.active {
+                display: flex;
+            }
+
+        .modal-box {
+            max-width: 420px;
+            width: 100%;
+            padding: 32px 28px;
+            border-radius: 28px;
+            background: rgba(255, 255, 255, 0.10);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.3);
+            color: #fff;
+            text-align: center;
+        }
+
+            .modal-box h3 {
+                font-size: 22px;
+                font-weight: 700;
+                margin-bottom: 8px;
+            }
+
+            .modal-box p {
+                font-size: 14px;
+                color: rgba(255, 255, 255, 0.4);
+                margin-bottom: 24px;
+            }
+
+            .modal-box input {
+                width: 100%;
+                padding: 14px 16px;
+                border-radius: 16px;
+                border: 1px solid rgba(255, 255, 255, 0.06);
+                background: rgba(255, 255, 255, 0.04);
+                color: #fff;
+                font-size: 16px;
+                outline: none;
+                transition: 0.3s ease;
+                margin-bottom: 16px;
+            }
+
+                .modal-box input:focus {
+                    border-color: rgba(255, 215, 0, 0.2);
+                    background: rgba(255, 255, 255, 0.08);
+                }
+
+                .modal-box input::placeholder {
+                    color: rgba(255, 255, 255, 0.3);
+                }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+            .modal-actions button {
+                padding: 10px 24px;
+                border-radius: 30px;
+                border: 1px solid rgba(255, 255, 255, 0.06);
+                background: rgba(255, 255, 255, 0.04);
+                color: rgba(255, 255, 255, 0.6);
+                font-size: 14px;
+                font-weight: 500;
+                cursor: pointer;
+                transition: 0.3s ease;
+            }
+
+                .modal-actions button:hover {
+                    background: rgba(255, 255, 255, 0.08);
+                    color: #fff;
+                }
+
+            .modal-actions .btn-primary {
+                background: linear-gradient(135deg, #fbbf24, #f59e0b);
+                border-color: #fbbf24;
+                color: #1a1a2e;
+                font-weight: 700;
+            }
+
+                .modal-actions .btn-primary:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 6px 25px rgba(251, 191, 36, 0.2);
+                }
+    </style>
+</head>
+
+<body>
+
+    <!-- ===== هدر ===== -->
+    <header class="mood-header">
+        <button class="menu-toggle" id="menuToggle" aria-label="منو">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <a href="/" class="mood-brand">
+            <div class="mood-logo">M</div>
+            <span class="mood-brand-name">MŌOD</span>
+        </a>
+
+        <div id="authSection">
+            <a href="/Login" id="authLoginBtn" class="mood-auth">
+                <span>ورود</span>
+                <span style="opacity:0.4;">/</span>
+                <span>ثبت‌نام</span>
+            </a>
+
+            <div id="authProfileCard" class="auth-profile-card">
+                <span class="user-name" id="headerUserName">کاربر</span>
+                <div class="avatar">
+                    <img id="headerAvatar" src="" alt="avatar" />
+                    <span class="placeholder" id="headerAvatarPlaceholder">👤</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ===== منوی کشویی ===== -->
+    <div class="menu-overlay" id="menuOverlay">
+        <div class="menu-panel">
+            <div class="menu-header">
+                <span class="menu-title">منو</span>
+                <button class="menu-close" id="menuClose">✕</button>
+            </div>
+            <nav class="menu-nav">
+                <div class="menu-item" style="cursor: default; opacity: 0.8; border-bottom: 1px solid rgba(255,255,255,0.04); margin-bottom: 4px;">
+                    <div style="width:36px; height:36px; border-radius:50%; background:rgba(255,255,255,0.06); display:flex; align-items:center; justify-content:center; font-size:18px; color:rgba(255,255,255,0.3); overflow:hidden; flex-shrink:0;">
+                        <span id="menuAvatarPlaceholder">👤</span>
+                        <img id="menuAvatarImg" src="" style="display:none; width:100%; height:100%; object-fit:cover;" />
+                    </div>
+                    <span id="menuUserName">کاربر مهمان</span>
+                </div>
+                <a href="#" class="menu-item">
+                    <i class="bi bi-clock-history"></i>
+                    <span>تاریخچه</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="bi bi-gear"></i>
+                    <span>تنظیمات</span>
+                </a>
+            </nav>
+        </div>
+    </div>
+
+    <!-- ===== تنظیمات ===== -->
+    <div class="settings-card">
+
+        <!-- ===== پروفایل (بدون کادر اضافی) ===== -->
+        <div class="profile-section">
+            <div class="profile-avatar" id="profileAvatar">
+                <span id="avatarPlaceholder" style="font-size: 44px; color: rgba(255,255,255,0.3);">👤</span>
+                <img id="avatarImg" src="" style="display:none; width:100%; height:100%; object-fit:cover;" />
+                <div class="upload-overlay">آپلود عکس</div>
+            </div>
+            <div class="profile-name" id="profileName">کاربر مهمان</div>
+            <div class="profile-email" id="profileEmail">guest@mood.com</div>
+            <div class="profile-login-prompt" id="loginPrompt" style="display: none;">برای تغییر اطلاعات وارد شوید</div>
+        </div>
+
+        <div class="settings-options">
+
+            <div class="settings-option" id="changeNameTrigger">
+                <div class="settings-option-left">
+                    <i class="bi bi-person"></i>
+                    <span>تغییر نام کاربری</span>
+                </div>
+                <div class="settings-option-right">
+                    <i class="bi bi-chevron-left"></i>
+                </div>
+            </div>
+
+            <div class="settings-option" id="appearanceToggle">
+                <div class="settings-option-left">
+                    <i class="bi bi-palette"></i>
+                    <span>تنظیمات ظاهری</span>
+                </div>
+                <div class="settings-option-right">
+                    <i class="bi bi-chevron-down"></i>
+                </div>
+            </div>
+
+            <div id="appearancePanel" style="display: none; padding: 16px 0; gap: 16px; flex-direction: column;">
+                <div class="font-size-control">
+                    <label>فونت</label>
+                    <select class="font-family-select" id="fontSelect">
+                        <option value="'Segoe UI', Tahoma, Geneva, Verdana, sans-serif">پیش‌فرض</option>
+                        <option value="'Vazir', sans-serif">وزیر</option>
+                        <option value="'Yekan', sans-serif">یکان</option>
+                        <option value="'Times New Roman', serif">Times New Roman</option>
+                        <option value="'Arial', sans-serif">Arial</option>
+                    </select>
+                </div>
+                <div class="font-size-control">
+                    <label>اندازه فونت</label>
+                    <input type="range" id="fontSizeRange" min="12" max="24" value="16" step="1" />
+                    <span id="fontSizeLabel">16</span>
+                </div>
+            </div>
+
+            <a href="/About" class="settings-option" style="text-decoration: none; color: inherit;">
+                <div class="settings-option-left">
+                    <i class="bi bi-info-circle"></i>
+                    <span>درباره ما</span>
+                </div>
+                <div class="settings-option-right">
+                    <i class="bi bi-chevron-left"></i>
+                </div>
+            </a>
+
+            <a href="/Contact" class="settings-option" style="text-decoration: none; color: inherit;">
+                <div class="settings-option-left">
+                    <i class="bi bi-envelope"></i>
+                    <span>تماس با ما</span>
+                </div>
+                <div class="settings-option-right">
+                    <i class="bi bi-chevron-left"></i>
+                </div>
+            </a>
+
+            <div class="settings-option" id="logoutBtn" style="border-color: rgba(239, 68, 68, 0.08);">
+                <div class="settings-option-left">
+                    <i class="bi bi-box-arrow-right" style="color: rgba(239, 68, 68, 0.4);"></i>
+                    <span style="color: rgba(239, 68, 68, 0.6);">خروج از حساب کاربری</span>
+                </div>
+                <div class="settings-option-right">
+                    <i class="bi bi-chevron-left" style="color: rgba(239, 68, 68, 0.2);"></i>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="back-to-happy">
+            <a href="/Happy">← برگشت به صفحه خوشحالی</a>
+        </div>
+    </div>
+
+    <!-- ===== مودال تغییر نام ===== -->
+    <div class="modal-overlay" id="changeNameModal">
+        <div class="modal-box">
+            <h3>تغییر نام کاربری</h3>
+            <p>نام جدید خود را وارد کنید</p>
+            <input type="text" id="newNameInput" placeholder="نام جدید..." />
+            <div class="modal-actions">
+                <button id="cancelNameBtn">لغو</button>
+                <button id="confirmNameBtn" class="btn-primary">تایید</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let isLoggedIn = false;
+        let userData = {
+            name: 'کاربر مهمان',
+            email: 'guest@mood.com',
+            avatar: null
+        };
+
+        function updateAllUI() {
+            const nameEl = document.getElementById('profileName');
+            const emailEl = document.getElementById('profileEmail');
+            const avatarPlaceholder = document.getElementById('avatarPlaceholder');
+            const avatarImg = document.getElementById('avatarImg');
+            const loginPrompt = document.getElementById('loginPrompt');
+
+            const menuName = document.getElementById('menuUserName');
+            const menuAvatarPlaceholder = document.getElementById('menuAvatarPlaceholder');
+            const menuAvatarImg = document.getElementById('menuAvatarImg');
+
+            const authLoginBtn = document.getElementById('authLoginBtn');
+            const authProfileCard = document.getElementById('authProfileCard');
+            const headerAvatar = document.getElementById('headerAvatar');
+            const headerAvatarPlaceholder = document.getElementById('headerAvatarPlaceholder');
+            const headerUserName = document.getElementById('headerUserName');
+
+            if (isLoggedIn) {
+                nameEl.textContent = userData.name;
+                emailEl.textContent = userData.email;
+                loginPrompt.style.display = 'none';
+                if (userData.avatar) {
+                    avatarPlaceholder.style.display = 'none';
+                    avatarImg.style.display = 'block';
+                    avatarImg.src = userData.avatar;
+                } else {
+                    avatarPlaceholder.style.display = 'block';
+                    avatarImg.style.display = 'none';
+                }
+
+                menuName.textContent = userData.name;
+                if (userData.avatar) {
+                    menuAvatarPlaceholder.style.display = 'none';
+                    menuAvatarImg.style.display = 'block';
+                    menuAvatarImg.src = userData.avatar;
+                } else {
+                    menuAvatarPlaceholder.style.display = 'block';
+                    menuAvatarImg.style.display = 'none';
+                }
+
+                authLoginBtn.style.display = 'none';
+                authProfileCard.style.display = 'flex';
+                headerUserName.textContent = userData.name;
+                if (userData.avatar) {
+                    headerAvatar.style.display = 'block';
+                    headerAvatar.src = userData.avatar;
+                    headerAvatarPlaceholder.style.display = 'none';
+                } else {
+                    headerAvatar.style.display = 'none';
+                    headerAvatarPlaceholder.style.display = 'flex';
+                }
+            } else {
+                nameEl.textContent = 'کاربر مهمان';
+                emailEl.textContent = 'guest@mood.com';
+                loginPrompt.style.display = 'block';
+                avatarPlaceholder.style.display = 'block';
+                avatarImg.style.display = 'none';
+
+                menuName.textContent = 'کاربر مهمان';
+                menuAvatarPlaceholder.style.display = 'block';
+                menuAvatarImg.style.display = 'none';
+
+                authLoginBtn.style.display = 'flex';
+                authProfileCard.style.display = 'none';
+            }
+        }
+
+        document.getElementById('profileAvatar').addEventListener('click', function() {
+            if (!isLoggedIn) {
+                alert('برای آپلود عکس پروفایل، ابتدا وارد حساب کاربری خود شوید.');
+                return;
+            }
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    userData.avatar = event.target.result;
+                    updateAllUI();
+                };
+                reader.readAsDataURL(file);
+            };
+            input.click();
+        });
+
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            if (!isLoggedIn) {
+                alert('شما قبلاً خارج شده‌اید.');
+                return;
+            }
+            if (confirm('آیا از خروج از حساب کاربری خود مطمئن هستید؟')) {
+                isLoggedIn = false;
+                userData = { name: 'کاربر مهمان', email: 'guest@mood.com', avatar: null };
+                updateAllUI();
+                alert('شما با موفقیت خارج شدید.');
+            }
+        });
+
+        const changeNameTrigger = document.getElementById('changeNameTrigger');
+        const modal = document.getElementById('changeNameModal');
+        const cancelBtn = document.getElementById('cancelNameBtn');
+        const confirmBtn = document.getElementById('confirmNameBtn');
+        const newNameInput = document.getElementById('newNameInput');
+
+        changeNameTrigger.addEventListener('click', function() {
+            if (!isLoggedIn) {
+                alert('برای تغییر نام، ابتدا وارد حساب کاربری خود شوید.');
+                return;
+            }
+            newNameInput.value = userData.name;
+            modal.classList.add('active');
+            setTimeout(() => newNameInput.focus(), 100);
+        });
+
+        function closeModal() {
+            modal.classList.remove('active');
+            newNameInput.value = '';
+        }
+
+        cancelBtn.addEventListener('click', closeModal);
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) closeModal();
+        });
+
+        confirmBtn.addEventListener('click', function() {
+            const newName = newNameInput.value.trim();
+            if (!newName) {
+                alert('نام نمی‌تواند خالی باشد.');
+                return;
+            }
+            userData.name = newName;
+            userData.email = newName.toLowerCase() + '@@mood.com';
+            updateAllUI();
+            closeModal();
+            alert('نام کاربری با موفقیت تغییر یافت.');
+        });
+
+        document.getElementById('appearanceToggle').addEventListener('click', function() {
+            const panel = document.getElementById('appearancePanel');
+            const icon = this.querySelector('.settings-option-right i');
+            if (panel.style.display === 'none') {
+                panel.style.display = 'flex';
+                icon.className = 'bi bi-chevron-up';
+            } else {
+                panel.style.display = 'none';
+                icon.className = 'bi bi-chevron-down';
+            }
+        });
+
+        document.getElementById('fontSelect').addEventListener('change', function() {
+            document.body.style.fontFamily = this.value;
+        });
+
+        document.getElementById('fontSizeRange').addEventListener('input', function() {
+            const size = this.value;
+            document.getElementById('fontSizeLabel').textContent = size;
+            document.body.style.fontSize = size + 'px';
+        });
+
+        document.getElementById('authLoginBtn').addEventListener('click', function(e) {
+            if (!isLoggedIn) {
+                e.preventDefault();
+                const name = prompt('نام خود را وارد کنید:');
+                if (name && name.trim()) {
+                    isLoggedIn = true;
+                    userData.name = name.trim();
+                    userData.email = name.trim().toLowerCase() + '@@mood.com';
+                    updateAllUI();
+                    alert('خوش آمدید ' + userData.name + '!');
+                }
+            }
+        });
+
+        updateAllUI();
+    </script>
+
+</body>
+</html>
