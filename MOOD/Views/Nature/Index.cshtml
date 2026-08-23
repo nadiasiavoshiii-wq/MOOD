@@ -1,0 +1,210 @@
+﻿@{
+    ViewData["Title"] = "طبیعت | MŌOD";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(145deg, #86efac 0%, #34d399 35%, #059669 65%, #064e3b 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-y: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+            body::-webkit-scrollbar {
+                display: none;
+            }
+
+        .nature-card {
+            max-width: 520px;
+            width: 100%;
+            padding: 40px 30px 50px;
+            border-radius: 32px;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(18px);
+            box-shadow: 0 12px 45px rgba(0, 0, 0, 0.15);
+            text-align: center;
+            color: #fff;
+            min-height: 520px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+            .nature-card h1 {
+                font-size: 32px;
+                font-weight: 800;
+                margin-bottom: 8px;
+                background: linear-gradient(135deg, #a7f3d0, #ffffff);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                text-shadow: 0 2px 20px rgba(52, 211, 153, 0.2);
+            }
+
+            .nature-card p {
+                font-size: 16px;
+                color: rgba(255, 255, 255, 0.6);
+                margin-bottom: 30px;
+                font-weight: 500;
+            }
+
+        .nature-icon {
+            font-size: 72px;
+            margin-bottom: 16px;
+            display: block;
+            transition: transform 3s ease-in-out;
+        }
+
+            .nature-icon:hover {
+                transform: translateY(-12px);
+            }
+
+        .nature-tips {
+            text-align: right;
+            width: 100%;
+            margin: 16px 0 24px;
+        }
+
+            .nature-tips li {
+                list-style: none;
+                padding: 10px 0;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+                font-size: 15px;
+                color: rgba(255, 255, 255, 0.8);
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+
+                .nature-tips li i {
+                    font-size: 20px;
+                    color: rgba(255, 255, 255, 0.3);
+                }
+
+        .nature-btn {
+            padding: 14px 40px;
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.06);
+            color: #fff;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(8px);
+            margin: 6px;
+        }
+
+            .nature-btn:hover {
+                background: rgba(255, 255, 255, 0.14);
+                border-color: rgba(255, 255, 255, 0.2);
+                transform: translateY(-3px);
+            }
+
+        .nature-btn-primary {
+            background: linear-gradient(135deg, #34d399, #059669);
+            border-color: #34d399;
+            color: #fff;
+            box-shadow: 0 4px 25px rgba(52, 211, 153, 0.2);
+        }
+
+            .nature-btn-primary:hover {
+                background: linear-gradient(135deg, #6ee7b7, #34d399);
+                box-shadow: 0 8px 40px rgba(52, 211, 153, 0.3);
+            }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 28px;
+            padding: 12px 28px;
+            border-radius: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.06);
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(8px);
+            cursor: pointer;
+        }
+
+            .back-link:hover {
+                background: rgba(255, 255, 255, 0.15);
+                color: #fff;
+                transform: translateY(-3px);
+            }
+    </style>
+</head>
+
+<body>
+
+    <div class="nature-card">
+        <span class="nature-icon">🌿</span>
+        <h1>طبیعت</h1>
+        <p>با طبیعت یکی شو و آرامش رو حس کن</p>
+
+        <ul class="nature-tips">
+            <li><i class="bi bi-tree"></i> به درخت‌ها نگاه کن و آرامش بگیر</li>
+            <li><i class="bi bi-water"></i> به صدای آب یا بارون گوش بده</li>
+            <li><i class="bi bi-cloud-sun"></i> آسمون رو تماشا کن</li>
+            <li><i class="bi bi-flower1"></i> یه گل یا گیاه رو لمس کن</li>
+        </ul>
+
+        <button class="nature-btn nature-btn-primary" id="natureBtn">
+            <i class="bi bi-play-circle"></i> ۵ دقیقه طبیعت گردی
+        </button>
+
+        <a href="/Calm" class="back-link">← برگشت به آرومم</a>
+    </div>
+
+    <script>
+        document.getElementById('natureBtn').addEventListener('click', function() {
+            const btn = this;
+            btn.innerHTML = '<i class="bi bi-clock"></i> ۵:۰۰';
+            btn.disabled = true;
+
+            let time = 300;
+            const interval = setInterval(() => {
+                const min = Math.floor(time / 60);
+                const sec = time % 60;
+                btn.innerHTML = `<i class="bi bi-clock"></i> ${min}:${sec < 10 ? '0' : ''}${sec}`;
+                time--;
+
+                if (time < 0) {
+                    clearInterval(interval);
+                    btn.innerHTML = '✅ تموم شد!';
+                    setTimeout(() => {
+                        btn.innerHTML = '<i class="bi bi-play-circle"></i> ۵ دقیقه طبیعت گردی';
+                        btn.disabled = false;
+                    }, 2000);
+                }
+            }, 1000);
+        });
+    </script>
+
+</body>
+</html>
