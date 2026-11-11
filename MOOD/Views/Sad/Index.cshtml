@@ -1,5 +1,836 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حالم گرفته | MŌOD</title>
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(145deg, #101b33, #1e3552, #365b78, #6b879b);
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            padding: 100px 60px 50px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-y: auto;
+        }
+
+            body::-webkit-scrollbar {
+                display: none;
+            }
+
+        /* Header */
+
+        .mood-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 50px;
+            background: rgba(11, 16, 48, 0.30);
+            backdrop-filter: blur(24px);
+            border-bottom: 1px solid rgba(255,255,255,.06);
+        }
+
+        .mood-brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            text-decoration: none;
+        }
+
+        .mood-logo {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 14px;
+            font-size: 22px;
+            font-weight: 900;
+            color: white;
+            background: linear-gradient(135deg, #263f60, #4f7895, #9bb7c8);
+            box-shadow: 0 0 20px rgba(107,151,181,.35);
+        }
+
+        .mood-brand-name {
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: .06em;
+            background: linear-gradient(90deg, #fff, #c2d5e3, #8fb4ca);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .mood-auth {
+            color: rgba(255,255,255,.7);
+            text-decoration: none;
+            font-size: 16px;
+            padding: 10px 20px;
+            border-radius: 30px;
+            border: 1px solid rgba(255,255,255,.08);
+            background: rgba(255,255,255,.04);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: .3s;
+        }
+
+            .mood-auth:hover {
+                background: rgba(255,255,255,.1);
+            }
+
+        /* Hamburger Menu */
+
+        .menu-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+            .menu-toggle span {
+                display: block;
+                width: 28px;
+                height: 2.5px;
+                background: rgba(255,255,255,.8);
+                border-radius: 4px;
+            }
+
+        .menu-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,.3);
+            backdrop-filter: blur(4px);
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: .3s;
+        }
+
+            .menu-overlay.active {
+                opacity: 1;
+                visibility: visible;
+            }
+
+        .menu-panel {
+            position: fixed;
+            top: 0;
+            left: -340px;
+            width: 320px;
+            height: 100%;
+            background: rgba(255,255,255,.18);
+            backdrop-filter: blur(32px);
+            padding: 28px 24px;
+            transition: left .35s ease;
+            display: flex;
+            flex-direction: column;
+            z-index: 2001;
+            border-radius: 0 24px 24px 0;
+            border: 1px solid rgba(255,255,255,.15);
+        }
+
+        .menu-overlay.active .menu-panel {
+            left: 0;
+        }
+
+        .menu-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255,255,255,.1);
+            margin-bottom: 24px;
+        }
+
+        .menu-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .menu-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 26px;
+            cursor: pointer;
+        }
+
+        .menu-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 18px;
+            border-radius: 16px;
+            color: white;
+            text-decoration: none;
+            background: rgba(255,255,255,.06);
+            transition: .3s;
+        }
+
+            .menu-item:hover {
+                background: rgba(255,255,255,.16);
+                transform: translateX(4px);
+            }
+
+            .menu-item i {
+                font-size: 22px;
+            }
+
+        /* Daily Quote */
+
+        .happy-item {
+            max-width: 1000px;
+            width: 100%;
+            margin: 0 auto 24px;
+            padding: 24px 40px;
+            border-radius: 28px;
+            background: rgba(255,255,255,.12);
+            border: 1px solid rgba(255,255,255,.06);
+            color: #dceaf3;
+            font-size: 1.2rem;
+            text-align: center;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 8px 35px rgba(0,0,0,.25);
+            opacity: 0;
+            transform: translateY(15px);
+            transition: .6s;
+        }
+
+            .happy-item.show {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+        /* Emotional Check-in */
+
+        .sad-checkin {
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto 24px;
+            padding: 28px 32px;
+            border-radius: 26px;
+            background: rgba(12,27,48,.30);
+            border: 1px solid rgba(210,230,242,.12);
+            backdrop-filter: blur(14px);
+            box-shadow: 0 8px 35px rgba(0,0,0,.18);
+            color: #f2f7fb;
+            opacity: 0;
+            transform: translateY(15px);
+            transition: .6s;
+        }
+
+            .sad-checkin.show {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            .sad-checkin h2 {
+                font-size: 21px;
+                margin-bottom: 9px;
+                color: #e4f0f7;
+            }
+
+            .sad-checkin .intro {
+                color: rgba(235,244,250,.72);
+                line-height: 1.9;
+                margin-bottom: 18px;
+                font-size: 15px;
+            }
+
+        .feeling-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        .feeling-chip {
+            border: 1px solid rgba(220,237,248,.20);
+            background: rgba(220,237,248,.08);
+            color: #f3f8fc;
+            padding: 10px 16px;
+            border-radius: 24px;
+            cursor: pointer;
+            font: inherit;
+            transition: .25s;
+        }
+
+            .feeling-chip:hover,
+            .feeling-chip.active {
+                background: rgba(158,193,215,.25);
+                border-color: rgba(220,237,248,.55);
+                transform: translateY(-2px);
+            }
+
+        .feeling-result {
+            min-height: 48px;
+            padding: 12px 16px;
+            border-radius: 15px;
+            background: rgba(220,237,248,.08);
+            color: #dceaf3;
+            line-height: 1.8;
+            font-size: 14px;
+        }
+
+        /* Sad Journal */
+
+        .sad-journal {
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto 24px;
+            padding: 26px 30px;
+            border-radius: 26px;
+            background: rgba(255,255,255,.11);
+            border: 1px solid rgba(220,237,248,.12);
+            backdrop-filter: blur(12px);
+            color: white;
+            opacity: 0;
+            transform: translateY(15px);
+            transition: .6s;
+        }
+
+            .sad-journal.show {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            .sad-journal h2 {
+                font-size: 20px;
+                margin-bottom: 8px;
+            }
+
+            .sad-journal p {
+                color: rgba(240,247,252,.68);
+                font-size: 14px;
+                line-height: 1.8;
+                margin-bottom: 14px;
+            }
+
+            .sad-journal textarea {
+                width: 100%;
+                min-height: 115px;
+                resize: vertical;
+                border: 1px solid rgba(220,237,248,.18);
+                border-radius: 16px;
+                padding: 14px 16px;
+                background: rgba(10,25,44,.25);
+                color: white;
+                font: inherit;
+                line-height: 1.8;
+                outline: none;
+            }
+
+                .sad-journal textarea::placeholder {
+                    color: rgba(240,247,252,.45);
+                }
+
+                .sad-journal textarea:focus {
+                    border-color: rgba(190,220,238,.55);
+                }
+
+        .journal-hint {
+            margin-top: 10px;
+            color: rgba(240,247,252,.55);
+            font-size: 12px;
+        }
+
+        /* Mood Cards */
+
+        .mood-grid {
+            max-width: 1000px;
+            width: 100%;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .mood-card {
+            width: 100%;
+            padding: 30px 35px;
+            border-radius: 28px;
+            background: rgba(255,255,255,.15);
+            border: 1px solid rgba(255,255,255,.06);
+            color: white;
+            backdrop-filter: blur(8px);
+            transition: all .3s ease;
+            opacity: 0;
+            transform: translateY(15px);
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 24px;
+            box-shadow: 0 8px 35px rgba(0,0,0,.2);
+        }
+
+            .mood-card.show {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+        .mood-card-link:hover .mood-card {
+            transform: translateY(-4px) scale(1.01);
+            background: rgba(255,255,255,.25);
+            border-color: rgba(255,255,255,.12);
+            box-shadow: 0 12px 45px rgba(0,0,0,.3);
+        }
+
+        .mood-card .icon {
+            font-size: 48px;
+            flex-shrink: 0;
+            width: 70px;
+            text-align: center;
+            color: rgba(255,255,255,.9);
+        }
+
+        .mood-card .text {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            text-align: right;
+        }
+
+        .mood-card .title {
+            font-size: 22px;
+            font-weight: 700;
+            color: rgba(255,255,255,.95);
+            margin-bottom: 4px;
+        }
+
+        .mood-card .desc {
+            font-size: 16px;
+            color: rgba(255,255,255,.65);
+            line-height: 1.7;
+        }
+
+        .mood-card-link {
+            text-decoration: none !important;
+            display: block;
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Header -->
+
+    <header class="mood-header">
+
+        <button class="menu-toggle" id="menuToggle" aria-label="منو">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <a href="/" class="mood-brand">
+            <div class="mood-logo">M</div>
+            <span class="mood-brand-name">MŌOD</span>
+        </a>
+
+        <a href="/Login" class="mood-auth">
+            <span>ورود</span>
+            <span style="opacity:.4;">/</span>
+            <span>ثبت‌نام</span>
+        </a>
+
+    </header>
+
+    <!-- Menu -->
+
+    <div class="menu-overlay" id="menuOverlay">
+
+        <div class="menu-panel">
+
+            <div class="menu-header">
+                <span class="menu-title">منو</span>
+                <button class="menu-close" id="menuClose">✕</button>
+            </div>
+
+            <nav class="menu-nav">
+
+                <a asp-controller="History"
+                   asp-action="Index"
+                   class="menu-item">
+
+                    <i class="bi bi-clock-history"></i>
+                    <span>تاریخچه</span>
+
+                </a>
+
+                <a asp-controller="Settings"
+                   asp-action="Index"
+                   class="menu-item">
+
+                    <i class="bi bi-gear"></i>
+                    <span>تنظیمات</span>
+
+                </a>
+
+            </nav>
+
+        </div>
+
+    </div>
+
+    <!-- Daily Quote -->
+
+    <div class="happy-item" id="daily-quote">
+        لازم نیست امروز وانمود کنی حالت خوبه.
+    </div>
+
+    <!-- Emotional Check-in -->
+
+    <section class="sad-checkin" id="sadCheckin">
+
+        <h2>الان غمت بیشتر شبیه چیه؟</h2>
+
+        <p class="intro">
+            گاهی فهمیدن اینکه دقیقاً چه احساسی داریم سخته.
+            از بین گزینه‌ها چیزی رو انتخاب کن که به حال الانت نزدیک‌تره.
+        </p>
+
+        <div class="feeling-options">
+
+            <button class="feeling-chip" data-feeling="lonely">
+                احساس تنهایی
+            </button>
+
+            <button class="feeling-chip" data-feeling="disappointed">
+                ناامیدی و دلخوری
+            </button>
+
+            <button class="feeling-chip" data-feeling="missing">
+                دلتنگی
+            </button>
+
+            <button class="feeling-chip" data-feeling="tired">
+                خستگی ذهنی
+            </button>
+
+            <button class="feeling-chip" data-feeling="worried">
+                نگرانی و اضطراب
+            </button>
+
+            <button class="feeling-chip" data-feeling="unknown">
+                نمی‌دونم، فقط ناراحتم
+            </button>
+
+        </div>
+
+        <div class="feeling-result" id="feelingResult">
+            هنوز چیزی انتخاب نکردی؛ هر وقت آماده بودی یکی از گزینه‌ها رو انتخاب کن.
+        </div>
+
+    </section>
+
+    <!-- Sad Journal -->
+
+    <section class="sad-journal" id="sadJournal">
+
+        <h2>حرف‌هایی که شاید جایی نگفتی</h2>
+
+        <p>
+            اگر دوست داری، هر چیزی که توی ذهنت می‌گذره اینجا بنویس.
+            لازم نیست مرتب یا کامل باشه؛ فقط همون چیزی رو بنویس که حس می‌کنی.
+        </p>
+
+        <textarea id="sadText"
+                  placeholder="امروز چیزی که بیشتر از همه ناراحتم کرد این بود که..."></textarea>
+
+        <div class="journal-hint">
+            نوشته‌های این قسمت در حال حاضر ذخیره نمی‌شن.
+        </div>
+
+    </section>
+
+    <!-- Mood Cards -->
+
+    <div class="mood-grid" id="moodGrid">
+
+        <a asp-controller="Music"
+           asp-action="Index"
+           class="mood-card-link">
+
+            <div class="mood-card">
+
+                <span class="icon">
+                    <i class="bi bi-music-note-beamed"></i>
+                </span>
+
+                <div class="text">
+                    <div class="title">
+                        موسیقی برای وقت‌های سنگین
+                    </div>
+
+                    <div class="desc">
+                        آهنگی متناسب با حال الانت گوش کن؛ لازم نیست فوراً حالت رو عوض کنی.
+                    </div>
+                </div>
+
+            </div>
+
+        </a>
+
+        <a asp-controller="Creative"
+           asp-action="Index"
+           class="mood-card-link">
+
+            <div class="mood-card">
+
+                <span class="icon">
+                    <i class="bi bi-palette"></i>
+                </span>
+
+                <div class="text">
+                    <div class="title">
+                        احساست رو بنویس یا نقاشی کن
+                    </div>
+
+                    <div class="desc">
+                        گاهی نوشتن یا نقاشی کردن کمک می‌کنه بفهمی درونت چه خبره.
+                    </div>
+                </div>
+
+            </div>
+
+        </a>
+
+        <a asp-controller="Message"
+           asp-action="Index"
+           class="mood-card-link">
+
+            <div class="mood-card">
+
+                <span class="icon">
+                    <i class="bi bi-chat-dots"></i>
+                </span>
+
+                <div class="text">
+                    <div class="title">
+                        با یک آدم امن حرف بزن
+                    </div>
+
+                    <div class="desc">
+                        اگر آمادگی داری، به کسی که بهش اعتماد داری بگو چه چیزی ناراحتت کرده.
+                    </div>
+                </div>
+
+            </div>
+
+        </a>
+
+        <a asp-controller="SaveTheMoment"
+           asp-action="Index"
+           class="mood-card-link">
+
+            <div class="mood-card">
+
+                <span class="icon">
+                    <i class="bi bi-clock-history"></i>
+                </span>
+
+                <div class="text">
+                    <div class="title">
+                        ثبت روزهای سخت
+                    </div>
+
+                    <div class="desc">
+                        حست و اتفاقات امروز رو ثبت کن تا بعداً بهتر بتونی تغییراتت رو ببینی.
+                    </div>
+                </div>
+
+            </div>
+
+        </a>
+
+        <a href="/?skipLoading=true"
+           class="mood-card-link">
+
+            <div class="mood-card">
+
+                <span class="icon">
+                    <i class="bi bi-arrow-return-right"></i>
+                </span>
+
+                <div class="text">
+                    <div class="title">
+                        برگشت به خونه
+                    </div>
+
+                    <div class="desc">
+                        برو به صفحه اصلی و حس دیگه‌ای انتخاب کن.
+                    </div>
+                </div>
+
+            </div>
+
+        </a>
+
+    </div>
+
+    <!-- JavaScript -->
+
+    <script>
+
+        const quotes = [
+            "«لازم نیست امروز وانمود کنی حالت خوبه؛ با خودت صادق باش.»",
+            "«گاهی فقط نام بردن از چیزی که ناراحتمون کرده، شروع فهمیدن اونه.»",
+            "«قرار نیست برای احساساتت عذرخواهی کنی.»",
+            "«اگر امروز انرژی کمی داری، می‌تونی کارها رو کوچک‌تر و آروم‌تر پیش ببری.»",
+            "«لازم نیست همین الان راه‌حل پیدا کنی؛ می‌تونی اول به حرف دلت گوش بدی.»",
+            "«درخواست همراهی و حرف زدن با یک آدم قابل اعتماد، نشونه ضعـف نیست.»",
+            "«یک روز سخت، تمام داستان زندگی تو نیست.»"
+        ];
+
+        function showRandomQuote() {
+
+            const randomIndex = Math.floor(
+                Math.random() * quotes.length
+            );
+
+            const el = document.getElementById('daily-quote');
+
+            if (el) {
+                el.textContent = quotes[randomIndex];
+                el.classList.add('show');
+            }
+
+        }
+
+        function showCards() {
+
+            const cards = document.querySelectorAll('.mood-card');
+
+            cards.forEach((card, index) => {
+
+                setTimeout(() => {
+                    card.classList.add('show');
+                }, 150 + (index * 80));
+
+            });
+
+        }
+
+        const feelingMessages = {
+
+            lonely:
+                "تنهایی می‌تونه خیلی سنگین باشه. شاید صحبت با یک آدم قابل اعتماد یا حتی یک پیام کوتاه، شروع خوبی باشه.",
+
+            disappointed:
+                "دلخوری و ناامیدی وقتی چیزی مطابق انتظارت پیش نمی‌ره طبیعی‌ان. لازم نیست همین الان درباره همه‌چیز تصمیم بگیری.",
+
+            missing:
+                "دلتنگی یعنی چیزی یا کسی برات اهمیت داشته. می‌تونی به احساست فرصت بدی، بدون اینکه مجبور باشی پنهانش کنی.",
+
+            tired:
+                "وقتی ذهنت خسته‌ست، حتی کارهای ساده هم سخت می‌شن. شاید کمی استراحت و فاصله گرفتن از فشارها کمک‌کننده باشه.",
+
+            worried:
+                "نگرانی درباره آینده یا اتفاقات پیش‌رو می‌تونه خسته‌کننده باشه. سعی کن فعلاً فقط روی قدم کوچیک بعدی تمرکز کنی.",
+
+            unknown:
+                "اشکالی نداره که دقیقاً ندونی چه حسی داری. لازم نیست برای احساست اسم مشخصی پیدا کنی؛ همین که متوجهش شدی کافیه."
+
+        };
+
+        const feelingButtons = document.querySelectorAll('.feeling-chip');
+
+        feelingButtons.forEach(button => {
+
+            button.addEventListener('click', function() {
+
+                feelingButtons.forEach(item => {
+                    item.classList.remove('active');
+                });
+
+                this.classList.add('active');
+
+                const feeling = this.dataset.feeling;
+
+                document.getElementById('feelingResult').textContent =
+                    feelingMessages[feeling];
+
+            });
+
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+
+            showRandomQuote();
+            showCards();
+
+            setTimeout(() => {
+                document.getElementById('sadCheckin').classList.add('show');
+            }, 180);
+
+            setTimeout(() => {
+                document.getElementById('sadJournal').classList.add('show');
+            }, 260);
+
+        });
+
+        // Hamburger Menu
+
+        const menuToggle = document.getElementById('menuToggle');
+        const menuOverlay = document.getElementById('menuOverlay');
+        const menuClose = document.getElementById('menuClose');
+
+        if (menuToggle && menuOverlay && menuClose) {
+
+            menuToggle.addEventListener('click', () => {
+                menuOverlay.classList.add('active');
+            });
+
+            menuClose.addEventListener('click', () => {
+                menuOverlay.classList.remove('active');
+            });
+
+            menuOverlay.addEventListener('click', (e) => {
+
+                if (e.target === menuOverlay) {
+                    menuOverlay.classList.remove('active');
+                }
+
+            });
+
+            document.addEventListener('keydown', (e) => {
+
+                if (e.key === 'Escape') {
+                    menuOverlay.classList.remove('active');
+                }
+
+            });
+
+        }
+
+    </script>
+
+</body>
+</html>
