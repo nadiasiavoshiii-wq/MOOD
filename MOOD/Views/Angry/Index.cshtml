@@ -1,5 +1,842 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>عصبانی | MŌOD</title>
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(145deg, #240b13, #541526, #8b2938, #b85b46);
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            padding: 100px 60px 50px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-y: auto;
+        }
+
+            body::-webkit-scrollbar {
+                display: none;
+            }
+
+        /* Header */
+
+        .mood-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 50px;
+            background: rgba(35, 5, 15, 0.4);
+            backdrop-filter: blur(24px);
+            border-bottom: 1px solid rgba(255,255,255,.06);
+        }
+
+        .mood-brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            text-decoration: none;
+        }
+
+        .mood-logo {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 14px;
+            font-size: 22px;
+            font-weight: 900;
+            color: white;
+            background: linear-gradient(135deg, #761c32, #b84443, #e58b5b);
+            box-shadow: 0 0 20px rgba(225, 90, 75, .35);
+        }
+
+        .mood-brand-name {
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: .06em;
+            background: linear-gradient(90deg, #fff, #ffd4c5, #f3a28b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .mood-auth {
+            color: rgba(255,255,255,.8);
+            text-decoration: none;
+            font-size: 16px;
+            padding: 10px 20px;
+            border-radius: 30px;
+            border: 1px solid rgba(255,255,255,.1);
+            background: rgba(255,255,255,.05);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: .3s;
+        }
+
+            .mood-auth:hover {
+                background: rgba(255,255,255,.14);
+            }
+
+        /* Hamburger Menu */
+
+        .menu-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+            .menu-toggle span {
+                display: block;
+                width: 28px;
+                height: 2.5px;
+                background: rgba(255,255,255,.9);
+                border-radius: 4px;
+            }
+
+        .menu-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,.4);
+            backdrop-filter: blur(4px);
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: .3s;
+        }
+
+            .menu-overlay.active {
+                opacity: 1;
+                visibility: visible;
+            }
+
+        .menu-panel {
+            position: fixed;
+            top: 0;
+            left: -340px;
+            width: 320px;
+            height: 100%;
+            background: rgba(75, 20, 35, .9);
+            backdrop-filter: blur(32px);
+            padding: 28px 24px;
+            transition: left .35s ease;
+            display: flex;
+            flex-direction: column;
+            z-index: 2001;
+            border-radius: 0 24px 24px 0;
+            border: 1px solid rgba(255,255,255,.15);
+        }
+
+        .menu-overlay.active .menu-panel {
+            left: 0;
+        }
+
+        .menu-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255,255,255,.1);
+            margin-bottom: 24px;
+        }
+
+        .menu-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .menu-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 26px;
+            cursor: pointer;
+        }
+
+        .menu-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 18px;
+            border-radius: 16px;
+            color: white;
+            text-decoration: none;
+            background: rgba(255,255,255,.06);
+            transition: .3s;
+        }
+
+            .menu-item:hover {
+                background: rgba(255,255,255,.16);
+                transform: translateX(4px);
+            }
+
+            .menu-item i {
+                font-size: 22px;
+            }
+
+        /* Daily Quote */
+
+        .happy-item {
+            max-width: 1000px;
+            width: 100%;
+            margin: 0 auto 24px;
+            padding: 24px 40px;
+            border-radius: 28px;
+            background: rgba(255,255,255,.12);
+            border: 1px solid rgba(255,255,255,.08);
+            color: #ffe5dc;
+            font-size: 1.2rem;
+            text-align: center;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 8px 35px rgba(0,0,0,.25);
+            opacity: 0;
+            transform: translateY(15px);
+            transition: .6s;
+        }
+
+            .happy-item.show {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+        /* Anger Check-in */
+
+        .anger-checkin {
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto 24px;
+            padding: 28px 32px;
+            border-radius: 26px;
+            background: rgba(45, 8, 20, .35);
+            border: 1px solid rgba(255, 220, 210, .13);
+            backdrop-filter: blur(14px);
+            box-shadow: 0 8px 35px rgba(0,0,0,.2);
+            color: #fff3ef;
+            opacity: 0;
+            transform: translateY(15px);
+            transition: .6s;
+        }
+
+            .anger-checkin.show {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            .anger-checkin h2 {
+                font-size: 21px;
+                margin-bottom: 9px;
+                color: #ffe0d5;
+            }
+
+            .anger-checkin .intro {
+                color: rgba(255,235,228,.75);
+                line-height: 1.9;
+                margin-bottom: 18px;
+                font-size: 15px;
+            }
+
+        .feeling-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        .feeling-chip {
+            border: 1px solid rgba(255,220,210,.2);
+            background: rgba(255,220,210,.08);
+            color: #fff3ef;
+            padding: 10px 16px;
+            border-radius: 24px;
+            cursor: pointer;
+            font: inherit;
+            transition: .25s;
+        }
+
+            .feeling-chip:hover,
+            .feeling-chip.active {
+                background: rgba(232,116,95,.25);
+                border-color: rgba(255,220,210,.6);
+                transform: translateY(-2px);
+            }
+
+        .feeling-result {
+            min-height: 48px;
+            padding: 12px 16px;
+            border-radius: 15px;
+            background: rgba(255,220,210,.08);
+            color: #ffe5dc;
+            line-height: 1.8;
+            font-size: 14px;
+        }
+
+        /* Anger Journal */
+
+        .anger-journal {
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto 24px;
+            padding: 26px 30px;
+            border-radius: 26px;
+            background: rgba(255,255,255,.11);
+            border: 1px solid rgba(255,220,210,.12);
+            backdrop-filter: blur(12px);
+            color: white;
+            opacity: 0;
+            transform: translateY(15px);
+            transition: .6s;
+        }
+
+            .anger-journal.show {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            .anger-journal h2 {
+                font-size: 20px;
+                margin-bottom: 8px;
+            }
+
+            .anger-journal p {
+                color: rgba(255,235,228,.7);
+                font-size: 14px;
+                line-height: 1.8;
+                margin-bottom: 14px;
+            }
+
+            .anger-journal textarea {
+                width: 100%;
+                min-height: 115px;
+                resize: vertical;
+                border: 1px solid rgba(255,220,210,.18);
+                border-radius: 16px;
+                padding: 14px 16px;
+                background: rgba(45,8,20,.25);
+                color: white;
+                font: inherit;
+                line-height: 1.8;
+                outline: none;
+            }
+
+                .anger-journal textarea::placeholder {
+                    color: rgba(255,235,228,.45);
+                }
+
+                .anger-journal textarea:focus {
+                    border-color: rgba(255,190,170,.6);
+                }
+
+        .journal-hint {
+            margin-top: 10px;
+            color: rgba(255,235,228,.55);
+            font-size: 12px;
+        }
+
+        /* Mood Cards */
+
+        .mood-grid {
+            max-width: 1000px;
+            width: 100%;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .mood-card {
+            width: 100%;
+            padding: 30px 35px;
+            border-radius: 28px;
+            background: rgba(255,255,255,.15);
+            border: 1px solid rgba(255,255,255,.08);
+            color: white;
+            backdrop-filter: blur(8px);
+            transition: all .3s ease;
+            opacity: 0;
+            transform: translateY(15px);
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 24px;
+            box-shadow: 0 8px 35px rgba(0,0,0,.2);
+        }
+
+            .mood-card.show {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+        .mood-card-link:hover .mood-card {
+            transform: translateY(-4px) scale(1.01);
+            background: rgba(255,255,255,.24);
+            border-color: rgba(255,255,255,.15);
+            box-shadow: 0 12px 45px rgba(0,0,0,.3);
+        }
+
+        .mood-card .icon {
+            font-size: 48px;
+            flex-shrink: 0;
+            width: 70px;
+            text-align: center;
+            color: #ffe1d6;
+        }
+
+        .mood-card .text {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            text-align: right;
+        }
+
+        .mood-card .title {
+            font-size: 22px;
+            font-weight: 700;
+            color: rgba(255,255,255,.95);
+            margin-bottom: 4px;
+        }
+
+        .mood-card .desc {
+            font-size: 16px;
+            color: rgba(255,255,255,.7);
+            line-height: 1.7;
+        }
+
+        .mood-card-link {
+            text-decoration: none !important;
+            display: block;
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Header -->
+
+    <header class="mood-header">
+
+        <button class="menu-toggle" id="menuToggle" aria-label="منو">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <a href="/" class="mood-brand">
+            <div class="mood-logo">M</div>
+            <span class="mood-brand-name">MŌOD</span>
+        </a>
+
+        <a href="/Login" class="mood-auth">
+            <span>ورود</span>
+            <span style="opacity:.4;">/</span>
+            <span>ثبت‌نام</span>
+        </a>
+
+    </header>
+
+    <!-- Menu -->
+
+    <div class="menu-overlay" id="menuOverlay">
+
+        <div class="menu-panel">
+
+            <div class="menu-header">
+                <span class="menu-title">منو</span>
+                <button class="menu-close" id="menuClose">✕</button>
+            </div>
+
+            <nav class="menu-nav">
+
+                <a asp-controller="History"
+                   asp-action="Index"
+                   class="menu-item">
+
+                    <i class="bi bi-clock-history"></i>
+                    <span>تاریخچه</span>
+
+                </a>
+
+                <a asp-controller="Settings"
+                   asp-action="Index"
+                   class="menu-item">
+
+                    <i class="bi bi-gear"></i>
+                    <span>تنظیمات</span>
+
+                </a>
+
+            </nav>
+
+        </div>
+
+    </div>
+
+    <!-- Daily Quote -->
+
+    <div class="happy-item" id="daily-quote">
+        عصبانی بودن اشکالی نداره؛ مهم اینه که با احساست چطور برخورد می‌کنی.
+    </div>
+
+    <!-- Anger Check-in -->
+
+    <section class="anger-checkin" id="angerCheckin">
+
+        <h2>چی باعث شده عصبانی باشی؟</h2>
+
+        <p class="intro">
+            عصبانیت می‌تونه دلایل مختلفی داشته باشه.
+            ببین کدوم گزینه بیشتر به اتفاقی که برات افتاده نزدیکه.
+        </p>
+
+        <div class="feeling-options">
+
+            <button class="feeling-chip" data-feeling="unfair">
+                احساس بی‌عدالتی
+            </button>
+
+            <button class="feeling-chip" data-feeling="ignored">
+                نادیده گرفته شدن
+            </button>
+
+            <button class="feeling-chip" data-feeling="disrespect">
+                بی‌احترامی
+            </button>
+
+            <button class="feeling-chip" data-feeling="frustrated">
+                به نتیجه نرسیدن
+            </button>
+
+            <button class="feeling-chip" data-feeling="pressure">
+                فشار و خستگی
+            </button>
+
+            <button class="feeling-chip" data-feeling="unknown">
+                نمی‌دونم، فقط عصبانی‌ام
+            </button>
+
+        </div>
+
+        <div class="feeling-result" id="feelingResult">
+            هنوز چیزی انتخاب نکردی؛ هر وقت آماده بودی یکی از گزینه‌ها رو انتخاب کن.
+        </div>
+
+    </section>
+
+    <!-- Anger Journal -->
+
+    <section class="anger-journal" id="angerJournal">
+
+        <h2>هرچی توی دلت مونده بنویس</h2>
+
+        <p>
+            لازم نیست حرف‌هات رو سانسور یا مرتب کنی.
+            اینجا می‌تونی درباره اتفاقی که افتاده و چیزی که ناراحتت کرده بنویسی.
+        </p>
+
+        <textarea id="angerText"
+                  placeholder="چیزی که منو عصبانی کرد این بود که..."></textarea>
+
+        <div class="journal-hint">
+            نوشته‌های این قسمت در حال حاضر ذخیره نمی‌شن.
+        </div>
+
+    </section>
+
+    <!-- Suggestions -->
+
+    <div class="mood-grid" id="moodGrid">
+
+        <a asp-controller="Music"
+           asp-action="Index"
+           class="mood-card-link">
+
+            <div class="mood-card">
+
+                <span class="icon">
+                    <i class="bi bi-music-note-beamed"></i>
+                </span>
+
+                <div class="text">
+                    <div class="title">
+                        کمی از شلوغی فاصله بگیر
+                    </div>
+
+                    <div class="desc">
+                        موسیقی مورد علاقه‌ات رو گوش کن و چند دقیقه به خودت فرصت بده.
+                    </div>
+                </div>
+
+            </div>
+
+        </a>
+
+        <a asp-controller="Creative"
+           asp-action="Index"
+           class="mood-card-link">
+
+            <div class="mood-card">
+
+                <span class="icon">
+                    <i class="bi bi-brush"></i>
+                </span>
+
+                <div class="text">
+                    <div class="title">
+                        عصبانیتت رو به خلاقیت تبدیل کن
+                    </div>
+
+                    <div class="desc">
+                        نقاشی کن، چیزی بنویس یا با یک فعالیت خلاقانه ذهنت رو مشغول کن.
+                    </div>
+                </div>
+
+            </div>
+
+        </a>
+
+        <a asp-controller="Message"
+           asp-action="Index"
+           class="mood-card-link">
+
+            <div class="mood-card">
+
+                <span class="icon">
+                    <i class="bi bi-chat-dots"></i>
+                </span>
+
+                <div class="text">
+                    <div class="title">
+                        درباره چیزی که ناراحتت کرده حرف بزن
+                    </div>
+
+                    <div class="desc">
+                        با یک فرد قابل اعتماد صحبت کن و اجازه بده حرف‌هات شنیده بشن.
+                    </div>
+                </div>
+
+            </div>
+
+        </a>
+
+        <a asp-controller="SaveTheMoment"
+           asp-action="Index"
+           class="mood-card-link">
+
+            <div class="mood-card">
+
+                <span class="icon">
+                    <i class="bi bi-journal-text"></i>
+                </span>
+
+                <div class="text">
+                    <div class="title">
+                        اتفاق امروز رو ثبت کن
+                    </div>
+
+                    <div class="desc">
+                        بنویس چه اتفاقی افتاد و بعد از آروم شدن چه برداشتی ازش داری.
+                    </div>
+                </div>
+
+            </div>
+
+        </a>
+
+        <a href="/?skipLoading=true"
+           class="mood-card-link">
+
+            <div class="mood-card">
+
+                <span class="icon">
+                    <i class="bi bi-arrow-return-right"></i>
+                </span>
+
+                <div class="text">
+                    <div class="title">
+                        برگشت به خونه
+                    </div>
+
+                    <div class="desc">
+                        برو به صفحه اصلی و حس دیگه‌ای انتخاب کن.
+                    </div>
+                </div>
+
+            </div>
+
+        </a>
+
+    </div>
+
+    <!-- JavaScript -->
+
+    <script>
+
+        const quotes = [
+            "«عصبانی بودن اشکالی نداره؛ مهم اینه که با احساست چطور برخورد می‌کنی.»",
+            "«قبل از هر واکنشی، به خودت فرصت فکر کردن بده.»",
+            "«احساساتت ارزش شنیده شدن دارن، حتی وقتی شدیده.»",
+            "«لازم نیست هر چیزی رو همون لحظه حل کنی.»",
+            "«گاهی فاصله گرفتن کوتاه از یک موقعیت، کمک می‌کنه واضح‌تر فکر کنی.»",
+            "«می‌تونی ناراحت باشی و در عین حال انتخاب کنی که به خودت و دیگران آسیب نرسونی.»",
+            "«شنیده شدن و درک شدن، حق توئه.»"
+        ];
+
+        function showRandomQuote() {
+
+            const randomIndex = Math.floor(
+                Math.random() * quotes.length
+            );
+
+            const quoteElement = document.getElementById('daily-quote');
+
+            quoteElement.textContent = quotes[randomIndex];
+
+            quoteElement.classList.add('show');
+
+        }
+
+        function showCards() {
+
+            const cards = document.querySelectorAll('.mood-card');
+
+            cards.forEach((card, index) => {
+
+                setTimeout(() => {
+                    card.classList.add('show');
+                }, 150 + (index * 80));
+
+            });
+
+        }
+
+        // Feeling Messages
+
+        const feelingMessages = {
+
+            unfair:
+                "وقتی احساس می‌کنی باهات ناعادلانه رفتار شده، عصبانیت قابل درکه. می‌تونی بعد از کمی فاصله، درباره چیزی که منصفانه نیست صحبت کنی.",
+
+            ignored:
+                "نادیده گرفته شدن می‌تونه ناراحت‌کننده باشه. شاید بد نباشه به طرف مقابل بگی که دوست داری حرف‌هات جدی گرفته بشن.",
+
+            disrespect:
+                "بی‌احترامی می‌تونه احساسات زیادی ایجاد کنه. حق داری درباره حد و مرزهایی که برات مهمن صحبت کنی.",
+
+            frustrated:
+                "وقتی برای چیزی تلاش می‌کنی و نتیجه نمی‌گیری، کلافه شدن طبیعیه. شاید یک مکث کوتاه کمک کنه راه دیگه‌ای پیدا کنی.",
+
+            pressure:
+                "گاهی عصبانیت نتیجه فشارهای جمع‌شده‌ست. کمی استراحت و کم کردن فشارهای غیرضروری می‌تونه کمک‌کننده باشه.",
+
+            unknown:
+                "اشکالی نداره که دلیل عصبانیتت رو دقیق ندونی. لازم نیست همین الان همه‌چیز رو بفهمی؛ کمی به خودت زمان بده."
+
+        };
+
+        const feelingButtons = document.querySelectorAll('.feeling-chip');
+
+        feelingButtons.forEach(button => {
+
+            button.addEventListener('click', function() {
+
+                feelingButtons.forEach(item => {
+                    item.classList.remove('active');
+                });
+
+                this.classList.add('active');
+
+                const feeling = this.dataset.feeling;
+
+                document.getElementById('feelingResult').textContent =
+                    feelingMessages[feeling];
+
+            });
+
+        });
+
+        // Page Animation
+
+        document.addEventListener('DOMContentLoaded', function() {
+
+            showRandomQuote();
+
+            showCards();
+
+            setTimeout(() => {
+                document.getElementById('angerCheckin').classList.add('show');
+            }, 180);
+
+            setTimeout(() => {
+                document.getElementById('angerJournal').classList.add('show');
+            }, 260);
+
+        });
+
+        // Hamburger Menu
+
+        const menuToggle = document.getElementById('menuToggle');
+
+        const menuOverlay = document.getElementById('menuOverlay');
+
+        const menuClose = document.getElementById('menuClose');
+
+        if (menuToggle && menuOverlay && menuClose) {
+
+            menuToggle.addEventListener('click', () => {
+                menuOverlay.classList.add('active');
+            });
+
+            menuClose.addEventListener('click', () => {
+                menuOverlay.classList.remove('active');
+            });
+
+            menuOverlay.addEventListener('click', (e) => {
+
+                if (e.target === menuOverlay) {
+                    menuOverlay.classList.remove('active');
+                }
+
+            });
+
+            document.addEventListener('keydown', (e) => {
+
+                if (e.key === 'Escape') {
+                    menuOverlay.classList.remove('active');
+                }
+
+            });
+
+        }
+
+    </script>
+
+</body>
+</html>
